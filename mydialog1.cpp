@@ -20,5 +20,6 @@ MyDialog1::~MyDialog1()
 void MyDialog1::on_pushButton_clicked()
 {
     ui->pushButton->setText("here clicked");
+    // added one line
     emit sendSignalToMain();
 }
