@@ -6,8 +6,6 @@ MyDialog1::MyDialog1(QWidget *parent)
     , ui(new Ui::MyDialog1)
 {
     ui->setupUi(this);
-
-    connect(ui->pushButton, &QPushButton::clicked, this, [](){qDebug() << "button clicked"; });
 }
 
 MyDialog1::~MyDialog1()
@@ -23,3 +21,4 @@ void MyDialog1::on_pushButton_clicked()
     // added one line
     emit sendSignalToMain();
 }
+
