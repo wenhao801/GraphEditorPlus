@@ -23,3 +23,5 @@ Inspired by [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/),
 ### 可能会有的附加功能（简单）
 
 直接对图上跑算法，例如最短路、最小生成树、
+
+阿萨范德萨发撒地方 萨芬撒地方
