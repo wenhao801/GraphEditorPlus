@@ -64,7 +64,7 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         showSub->setText(QCoreApplication::translate("MainWindow", "Show SubWindow", nullptr));
-        addNode->setText(QCoreApplication::translate("MainWindow", "PushButton", nullptr));
+        addNode->setText(QCoreApplication::translate("MainWindow", "Add Node", nullptr));
     } // retranslateUi
 
 };

@@ -4,4 +4,8 @@ MyNode::MyNode(qreal x, qreal y, QGraphicsItem *parent): QGraphicsEllipseItem(x,
     setPen(QPen(QBrush(Qt::black, Qt::SolidPattern), 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     setBrush(Qt::white);
     setFlag(QGraphicsItem::ItemIsMovable);
+
+    name = new QGraphicsSimpleTextItem("NodeName", this);
+    name->setFont(QFont("Microsoft Yahei", -1, QFont::Bold));
+    name->setPos(boundingRect().center() - name->boundingRect().center());
 }
