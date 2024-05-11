@@ -7,6 +7,21 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    scene = new MyScene(this);
+    ui->graphicsView->setScene(scene);
+
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+
+    scene->setBackgroundBrush(Qt::white);
+
+    QPen outlinePen(Qt::black);
+    outlinePen.setWidth(2);
+    auto circ = scene->addEllipse(0, 0, 50, 50, outlinePen);
+    circ->setFlag(QGraphicsItem::ItemIsMovable);
+
 }
 
 MainWindow::~MainWindow()

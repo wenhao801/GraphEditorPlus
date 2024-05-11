@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1135</width>
+    <height>633</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="showSub">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>260</y>
+      <x>10</x>
+      <y>20</y>
       <width>131</width>
       <height>31</height>
      </rect>
@@ -27,13 +27,23 @@
      <string>Show SubWindow</string>
     </property>
    </widget>
+   <widget class="QGraphicsView" name="graphicsView">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>120</y>
+      <width>881</width>
+      <height>441</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1135</width>
      <height>21</height>
     </rect>
    </property>

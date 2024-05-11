@@ -40,4 +40,25 @@ Inspired by [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/),
 
 新功能：神经网络计算图模拟。
 
-加入类似于 [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/) 中 unfix 模式的物理系统，让图上的点、边可以自动地间隔开。
+加入类似于 [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/) 中 unfix 模式的物理系统，让图上的点、边可以自动地间隔开。// 找到了参考代码（大概），好像也不是那么难。
+
+### 程序结构
+
+```cpp
+struct Node {
+    double x, y;
+    string name;
+    set <Edge*> in, out; // 可能有按地址找边/按指向的点找边，因此可能之后再写数据结构
+    // 无向图时 in === out
+};
+```
+
+```cpp
+struct Edge {
+    Node *u, *v;
+    string w; // weight
+    Node* ad(Node* now) { return u == now ? v : u; }
+};
+```
+
+画图 QGraphicsView？

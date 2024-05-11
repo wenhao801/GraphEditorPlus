@@ -11,11 +11,13 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    mydialog1.cpp
+    mydialog1.cpp \
+    myscene.cpp
 
 HEADERS += \
     mainwindow.h \
-    mydialog1.h
+    mydialog1.h \
+    myscene.h
 
 FORMS += \
     mainwindow.ui \
