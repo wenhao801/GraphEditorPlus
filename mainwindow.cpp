@@ -17,10 +17,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     scene->setBackgroundBrush(Qt::white);
 
-    QPen outlinePen(Qt::black);
-    outlinePen.setWidth(2);
-    auto circ = scene->addEllipse(0, 0, 50, 50, outlinePen);
-    circ->setFlag(QGraphicsItem::ItemIsMovable);
+    scene->addNode(0, 0);
+
+    scene->addNode(80, 80);
 
 }
 
@@ -41,3 +40,11 @@ void MainWindow::subClicked()
 {
     qDebug() << "main called";
 }
+
+void MainWindow::on_addNode_clicked()
+{
+    qreal rx = QRandomGenerator::global()->generateDouble() * 200 - 100;
+    qreal ry = QRandomGenerator::global()->generateDouble() * 200 - 100;
+    scene->addNode(rx, ry);
+}
+

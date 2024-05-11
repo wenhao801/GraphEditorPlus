@@ -26,6 +26,7 @@ public:
     QWidget *centralwidget;
     QPushButton *showSub;
     QGraphicsView *graphicsView;
+    QPushButton *addNode;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -42,6 +43,9 @@ public:
         graphicsView = new QGraphicsView(centralwidget);
         graphicsView->setObjectName("graphicsView");
         graphicsView->setGeometry(QRect(180, 120, 881, 441));
+        addNode = new QPushButton(centralwidget);
+        addNode->setObjectName("addNode");
+        addNode->setGeometry(QRect(10, 60, 111, 31));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
@@ -60,6 +64,7 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         showSub->setText(QCoreApplication::translate("MainWindow", "Show SubWindow", nullptr));
+        addNode->setText(QCoreApplication::translate("MainWindow", "PushButton", nullptr));
     } // retranslateUi
 
 };

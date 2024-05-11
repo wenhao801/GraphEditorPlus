@@ -7,9 +7,15 @@ MyScene::MyScene(QObject *parent)
     setSceneRect(-500, -500, 1000, 1000);
 }
 
+void MyScene::addNode(qreal x, qreal y) {
+    addItem(new MyNode(x, y));
+}
+
 void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsScene::mousePressEvent(event);
-    setSceneRect(sceneRect().united(itemsBoundingRect().adjusted(-100, -100, 100, 100)));
+
+    const int expandSize = 100;
+    setSceneRect(sceneRect().united(itemsBoundingRect().adjusted(-expandSize, -expandSize, expandSize, expandSize)));
 
     QLineF topLine(sceneRect().topLeft(),
                    sceneRect().topRight());
@@ -20,7 +26,7 @@ void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     QLineF bottomLine(sceneRect().bottomLeft(),
                       sceneRect().bottomRight());
 
-    QPen myPen = QPen(Qt::red);
+    // QPen myPen = QPen(Qt::red);
 
     // addLine(topLine, myPen);
     // addLine(leftLine, myPen);

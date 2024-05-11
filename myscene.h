@@ -5,6 +5,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 
+#include "mynode.h"
+
 class MyScene : public QGraphicsScene
 {
     Q_OBJECT
@@ -15,6 +17,8 @@ protected:
     // void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 public:
     explicit MyScene(QObject *parent = nullptr);
+
+    void addNode(qreal x, qreal y);
 
 private:
     bool pressing;

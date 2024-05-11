@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QRandomGenerator>
+
 #include "myscene.h"
 
 QT_BEGIN_NAMESPACE
@@ -22,6 +24,8 @@ public:
 
 private slots:
     void on_showSub_clicked();
+
+    void on_addNode_clicked();
 
 private:
     Ui::MainWindow *ui;

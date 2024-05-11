@@ -46,7 +46,6 @@ Inspired by [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/),
 
 ```cpp
 struct Node {
-    double x, y;
     string name;
     set <Edge*> in, out; // 可能有按地址找边/按指向的点找边，因此可能之后再写数据结构
     // 无向图时 in === out
@@ -61,4 +60,11 @@ struct Edge {
 };
 ```
 
-画图 QGraphicsView？
+## ChangeLog
+
+搭了一个自定义的 MyNode 类。
+
+TODO： 点在叠放时的上下层问题？（现在好像是：后生成的点总在上面，希望改为：将每次拖动的点的层级设置为最高）
+
+TODO：拖动空白区域时，Scene 自动扩展（可能需要自定义 View，再重载相关的 event）
+
