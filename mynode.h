@@ -8,6 +8,10 @@
 #include <QBrush>
 #include <QFont>
 
+#include <set>
+
+class MyEdge;
+
 class MyNode : public QGraphicsEllipseItem
 {
 public:
@@ -16,6 +20,8 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     QGraphicsSimpleTextItem *name;
+
+    std::set <MyEdge*> inEdge, outEdge;
 };
 
 #endif // MYNODE_H

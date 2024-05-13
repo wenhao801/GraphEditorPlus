@@ -21,8 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     MyNode* v = scene->addNode(80, 80);
 
-    MyEdge* e = new MyEdge(u, v);
-    scene->addItem(e);
+    scene->addEdge(u, v);
+
+    MyNode *w = scene->addNode(-120, 40);
+    scene->addEdge(u, w);
+
 }
 
 MainWindow::~MainWindow()

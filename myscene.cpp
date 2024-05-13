@@ -13,6 +13,12 @@ MyNode* MyScene::addNode(qreal x, qreal y) {
     node->setPos(x, y);
     return node;
 }
+MyEdge* MyScene::addEdge(MyNode *u, MyNode *v) {
+    MyEdge* edge = new MyEdge(u, v);
+    addItem(edge);
+    u->outEdge.insert(edge), v->inEdge.insert(edge);
+    return edge;
+}
 
 void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsScene::mousePressEvent(event);

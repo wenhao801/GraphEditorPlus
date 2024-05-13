@@ -20,6 +20,7 @@ public:
     explicit MyScene(QObject *parent = nullptr);
 
     MyNode* addNode(qreal x, qreal y);
+    MyEdge* addEdge(MyNode *u, MyNode *v);
 
 };
 
