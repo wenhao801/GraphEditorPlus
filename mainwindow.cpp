@@ -17,10 +17,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     scene->setBackgroundBrush(Qt::white);
 
-    scene->addNode(0, 0);
+    MyNode* u = scene->addNode(0, 0);
 
-    scene->addNode(80, 80);
+    MyNode* v = scene->addNode(80, 80);
 
+    MyEdge* e = new MyEdge(u, v);
+    scene->addItem(e);
 }
 
 MainWindow::~MainWindow()

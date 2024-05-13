@@ -6,6 +6,7 @@
 #include <QGraphicsItem>
 
 #include "mynode.h"
+#include "myedge.h"
 
 class MyScene : public QGraphicsScene
 {
@@ -18,11 +19,8 @@ protected:
 public:
     explicit MyScene(QObject *parent = nullptr);
 
-    void addNode(qreal x, qreal y);
+    MyNode* addNode(qreal x, qreal y);
 
-private:
-    bool pressing;
-    QPointF startPointer, startCenter;
 };
 
 #endif // MYSCENE_H

@@ -7,8 +7,11 @@ MyScene::MyScene(QObject *parent)
     setSceneRect(-500, -500, 1000, 1000);
 }
 
-void MyScene::addNode(qreal x, qreal y) {
-    addItem(new MyNode(x, y));
+MyNode* MyScene::addNode(qreal x, qreal y) {
+    MyNode* node = new MyNode();
+    addItem(node);
+    node->setPos(x, y);
+    return node;
 }
 
 void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {

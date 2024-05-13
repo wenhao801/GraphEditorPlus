@@ -12,12 +12,14 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mydialog1.cpp \
+    myedge.cpp \
     mynode.cpp \
     myscene.cpp
 
 HEADERS += \
     mainwindow.h \
     mydialog1.h \
+    myedge.h \
     mynode.h \
     myscene.h
 
