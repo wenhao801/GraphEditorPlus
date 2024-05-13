@@ -21,6 +21,8 @@ public:
 
     QGraphicsSimpleTextItem *name;
 
+    const int penSize = 5, radius = 25;
+
     std::set <MyEdge*> inEdge, outEdge;
 };
 

@@ -9,6 +9,7 @@ class MyNode;
 
 class MyEdge : public QGraphicsLineItem
 {
+    const int penSize = 3;
 public:
     MyNode *startNode, *endNode;
     QGraphicsSimpleTextItem *weight;
