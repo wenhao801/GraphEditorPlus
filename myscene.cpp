@@ -1,5 +1,6 @@
 #include "myscene.h"
 #include <QGraphicsSceneMouseEvent>
+#include<QListWidget>
 
 MyScene::MyScene(QObject *parent)
     : QGraphicsScene{parent}
@@ -21,28 +22,21 @@ MyEdge* MyScene::addEdge(MyNode *u, MyNode *v) {
 }
 
 void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    QGraphicsScene::mousePressEvent(event);
 
     const int expandSize = 100;
     setSceneRect(sceneRect().united(itemsBoundingRect().adjusted(-expandSize, -expandSize, expandSize, expandSize)));
 
-    QLineF topLine(sceneRect().topLeft(),
-                   sceneRect().topRight());
-    QLineF leftLine(sceneRect().topLeft(),
-                    sceneRect().bottomLeft());
-    QLineF rightLine(sceneRect().topRight(),
-                     sceneRect().bottomRight());
-    QLineF bottomLine(sceneRect().bottomLeft(),
-                      sceneRect().bottomRight());
+    QPointF clicked_point = event->buttonDownScenePos(Qt::LeftButton);
+    qDebug() << clicked_point << ' ';
+    QGraphicsItem * want = itemAt(clicked_point, QTransform());
+    if (want) {
+        qDebug() << want->scenePos() << Qt::endl;
+        want->setZValue(standard_z);
+        standard_z += 1e-5;
+        qDebug() << standard_z << Qt::endl;
+    }
+    else qDebug() << "nullptr" << Qt::endl;
 
-    // QPen myPen = QPen(Qt::red);
 
-    // addLine(topLine, myPen);
-    // addLine(leftLine, myPen);
-    // addLine(rightLine, myPen);
-    // addLine(bottomLine, myPen);
-
-    qDebug() << width() << ' ' << height() << Qt::endl;
-    qDebug() << sceneRect().bottom() << ' ' << sceneRect().top() << ' ' << sceneRect().left() << ' ' << sceneRect().right() << Qt::endl;
-    qDebug() << itemsBoundingRect().bottom() << ' ' << itemsBoundingRect().top() << ' ' << itemsBoundingRect().left() << ' ' << itemsBoundingRect().right() << Qt::endl;
+    QGraphicsScene::mousePressEvent(event);
 }
