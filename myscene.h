@@ -26,10 +26,12 @@ public:
 private:
     bool dragged;
     QGraphicsView *qgView;
-    void increseEdge();
-    int edgeWidth;
+    void increseBoundray();
+    int boundrayWidth;
     int extendAmount;
     QPointF lastClickedPoint;
+
+    float standard_z = 1e-5;
 };
 
 #endif // MYSCENE_H

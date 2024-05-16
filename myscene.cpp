@@ -1,5 +1,6 @@
 #include "myscene.h"
 #include <QGraphicsSceneMouseEvent>
+#include<QListWidget>
 
 MyScene::MyScene(QObject *parent, QGraphicsView *q)
     : QGraphicsScene(parent), qgView(q)
@@ -7,7 +8,7 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q)
     setSceneRect(-500, -500, 1000, 1000);
 
     dragged = 0;
-    edgeWidth = 10;
+    boundrayWidth = 10;
     extendAmount = 1000;
 }
 
@@ -29,16 +30,17 @@ void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     const int expandSize = 100;
     setSceneRect(sceneRect().united(itemsBoundingRect().adjusted(-expandSize, -expandSize, expandSize, expandSize)));
 
-    QLineF topLine(sceneRect().topLeft(),
-                   sceneRect().topRight());
-    QLineF leftLine(sceneRect().topLeft(),
-                    sceneRect().bottomLeft());
-    QLineF rightLine(sceneRect().topRight(),
-                     sceneRect().bottomRight());
-    QLineF bottomLine(sceneRect().bottomLeft(),
-                      sceneRect().bottomRight());
+    QPointF clicked_point = event->buttonDownScenePos(Qt::LeftButton);
+    qDebug() << clicked_point << ' ';
+    QGraphicsItem * want = itemAt(clicked_point, QTransform());
+    if (want) {
+        qDebug() << want->scenePos() << Qt::endl;
+        want->setZValue(standard_z);
+        standard_z += 1e-5;
+        qDebug() << standard_z << Qt::endl;
+    }
+    else qDebug() << "nullptr" << Qt::endl;
 
-    // QPen myPen = QPen(Qt::red);
 
     // addLine(topLine, myPen);
     // addLine(leftLine, myPen);
@@ -52,7 +54,7 @@ void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     dragged = 1;
     lastClickedPoint = event->scenePos();
     qDebug() << "dragged " << lastClickedPoint << Qt::endl;
-    increseEdge();
+    increseBoundray();
 
     QGraphicsScene::mousePressEvent(event);
 }
@@ -68,27 +70,27 @@ void MyScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
         return;
     }
     qDebug() << "dragging " << Qt::endl;
-    increseEdge();
+    increseBoundray();
     QGraphicsScene::mouseMoveEvent(event);
 }
 
-void MyScene::increseEdge(){
+void MyScene::increseBoundray(){
     QRectF currentSceneRect = sceneRect();
     bool needUpdate = false;
 
-    if (qgView->mapToScene(qgView->viewport()->rect().bottomRight()).x() > currentSceneRect.right() - edgeWidth) {
+    if (qgView->mapToScene(qgView->viewport()->rect().bottomRight()).x() > currentSceneRect.right() - boundrayWidth) {
         currentSceneRect.setRight(currentSceneRect.right() + extendAmount);
         needUpdate = true;
     }
-    if (qgView->mapToScene(qgView->viewport()->rect().bottomRight()).y() > currentSceneRect.bottom() - edgeWidth) {
+    if (qgView->mapToScene(qgView->viewport()->rect().bottomRight()).y() > currentSceneRect.bottom() - boundrayWidth) {
         currentSceneRect.setBottom(currentSceneRect.bottom() + extendAmount);
         needUpdate = true;
     }
-    if (qgView->mapToScene(qgView->viewport()->rect().topLeft()).x() < currentSceneRect.left() + edgeWidth) {
+    if (qgView->mapToScene(qgView->viewport()->rect().topLeft()).x() < currentSceneRect.left() + boundrayWidth) {
         currentSceneRect.setLeft(currentSceneRect.left() - extendAmount);
         needUpdate = true;
     }
-    if (qgView->mapToScene(qgView->viewport()->rect().topLeft()).y() < currentSceneRect.top() + edgeWidth) {
+    if (qgView->mapToScene(qgView->viewport()->rect().topLeft()).y() < currentSceneRect.top() + boundrayWidth) {
         currentSceneRect.setTop(currentSceneRect.top() - extendAmount);
         needUpdate = true;
     }
