@@ -22,6 +22,7 @@ public:
     MyNode* addNode(qreal x, qreal y);
     MyEdge* addEdge(MyNode *u, MyNode *v);
 
+    float standard_z = 1e-5;
 };
 
 #endif // MYSCENE_H
