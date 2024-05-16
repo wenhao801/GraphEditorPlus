@@ -14,14 +14,22 @@ class MyScene : public QGraphicsScene
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    // void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
-    // void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 public:
-    explicit MyScene(QObject *parent = nullptr);
+    explicit MyScene(QObject *parent = nullptr, QGraphicsView *q = nullptr);
 
     MyNode* addNode(qreal x, qreal y);
     MyEdge* addEdge(MyNode *u, MyNode *v);
 
+
+private:
+    bool dragged;
+    QGraphicsView *qgView;
+    void increseEdge();
+    int edgeWidth;
+    int extendAmount;
+    QPointF lastClickedPoint;
 };
 
 #endif // MYSCENE_H
