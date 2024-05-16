@@ -26,21 +26,8 @@ void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     const int expandSize = 100;
     setSceneRect(sceneRect().united(itemsBoundingRect().adjusted(-expandSize, -expandSize, expandSize, expandSize)));
 
-    QLineF topLine(sceneRect().topLeft(),
-                   sceneRect().topRight());
-    QLineF leftLine(sceneRect().topLeft(),
-                    sceneRect().bottomLeft());
-    QLineF rightLine(sceneRect().topRight(),
-                     sceneRect().bottomRight());
-    QLineF bottomLine(sceneRect().bottomLeft(),
-                      sceneRect().bottomRight());
+    // adjusted here
 
-    // QPen myPen = QPen(Qt::red);
-
-    // addLine(topLine, myPen);
-    // addLine(leftLine, myPen);
-    // addLine(rightLine, myPen);
-    // addLine(bottomLine, myPen);
 
     qDebug() << width() << ' ' << height() << Qt::endl;
     qDebug() << sceneRect().bottom() << ' ' << sceneRect().top() << ' ' << sceneRect().left() << ' ' << sceneRect().right() << Qt::endl;
