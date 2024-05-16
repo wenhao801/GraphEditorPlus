@@ -42,6 +42,8 @@ Inspired by [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/),
 
 加入类似于 [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/) 中 unfix 模式的物理系统，让图上的点、边可以自动地间隔开。// 找到了参考代码（大概），好像也不是那么难。
 
+实现撤销。
+
 ### 程序结构
 
 ```cpp
@@ -71,3 +73,14 @@ TODO：拖动空白区域时，Scene 自动扩展（可能需要自定义 View�
 TODO：删点
 
 TODO：将点拖出边框后边 会 断 掉，~~拖得太快有残影？~~ 部分修复了，最好能限制在 View 内拖动
+
+## 模式设计
+
+选择：左键选择单个点（边），双击改变点权/边权，左键拖动画出矩形批量选择
+
+移动：左键点击并拖拽实现单点移动；点击并拖拽空白位置实现画布移动
+
+加：点击空白位置加点，DragDrop 加边
+
+删：直接点击相应的点/边，或者拖动并画出矩形来批量删
+
