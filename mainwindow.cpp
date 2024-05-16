@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    scene = new MyScene(this);
+    scene = new MyScene(this, ui->graphicsView);
     ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     ui->graphicsView->setScene(scene);
 
