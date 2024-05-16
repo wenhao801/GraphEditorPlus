@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+
     scene = new MyScene(this, ui->graphicsView);
     ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     ui->graphicsView->setScene(scene);
@@ -17,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
 
     scene->setBackgroundBrush(Qt::white);
+
+    ui->toolBar->addWidget(ui->toolButton);
 
     MyNode* u = scene->addNode(0, 0);
 
