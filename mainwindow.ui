@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>GraphEditorMinus</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="GraphEditorMinus.qrc">
+    <normaloff>:/pictures/appIcon.png</normaloff>:/pictures/appIcon.png</iconset>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
@@ -69,9 +73,8 @@
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <selectedon>pictures/select.png</selectedon>
-     </iconset>
+     <iconset resource="GraphEditorMinus.qrc">
+      <normaloff>:/pictures/select.png</normaloff>:/pictures/select.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -93,8 +96,8 @@
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <normaloff>pictures/move.png</normaloff>pictures/move.png</iconset>
+     <iconset resource="GraphEditorMinus.qrc">
+      <normaloff>:/pictures/move.png</normaloff>:/pictures/move.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -116,9 +119,8 @@
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <selectedon>pictures/add.png</selectedon>
-     </iconset>
+     <iconset resource="GraphEditorMinus.qrc">
+      <normaloff>:/pictures/add.png</normaloff>:/pictures/add.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -140,9 +142,8 @@
      <string/>
     </property>
     <property name="icon">
-     <iconset>
-      <selectedon>pictures/delete.png</selectedon>
-     </iconset>
+     <iconset resource="GraphEditorMinus.qrc">
+      <normaloff>:/pictures/delete.png</normaloff>:/pictures/delete.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -154,6 +155,13 @@
      <enum>Qt::ToolButtonIconOnly</enum>
     </property>
    </widget>
+   <zorder>toolButton_1</zorder>
+   <zorder>showSub</zorder>
+   <zorder>graphicsView</zorder>
+   <zorder>addNode</zorder>
+   <zorder>toolButton_2</zorder>
+   <zorder>toolButton_3</zorder>
+   <zorder>toolButton_4</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -167,6 +175,8 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="GraphEditorMinus.qrc"/>
+ </resources>
  <connections/>
 </ui>
