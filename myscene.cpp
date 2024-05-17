@@ -7,22 +7,52 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q)
 {
     setSceneRect(-500, -500, 1000, 1000);
 
+    curMode = MoveMode;
     dragged = 0;
     boundrayWidth = 10;
     extendAmount = 1000;
+
+
+    MyNode* u = addNode(0, 0);
+
+    MyNode* v = addNode(80, 80);
+
+    addEdge(u, v);
+
+    MyNode *w = addNode(-120, 40);
+    addEdge(u, w);
+
+    switchMode(curMode);
 }
 
 MyNode* MyScene::addNode(qreal x, qreal y) {
     MyNode* node = new MyNode();
     addItem(node);
+    nodes.insert(node);
     node->setPos(x, y);
     return node;
 }
 MyEdge* MyScene::addEdge(MyNode *u, MyNode *v) {
     MyEdge* edge = new MyEdge(u, v);
     addItem(edge);
+    edges.insert(edge);
     u->outEdge.insert(edge), v->inEdge.insert(edge);
     return edge;
+}
+
+void MyScene::switchMode(CursorMode mode) {
+    // exit current mode
+    if (curMode == MoveMode) {
+        for (auto p: nodes) p->setFlag(QGraphicsItem::ItemIsMovable, 0);
+        qgView->setDragMode(QGraphicsView::NoDrag);
+    }
+
+    // enter new mode
+    curMode = mode;
+    if (curMode == MoveMode) {
+        for (auto p: nodes) p->setFlag(QGraphicsItem::ItemIsMovable);
+        qgView->setDragMode(QGraphicsView::ScrollHandDrag);
+    }
 }
 
 void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
@@ -30,46 +60,37 @@ void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     const int expandSize = 100;
     setSceneRect(sceneRect().united(itemsBoundingRect().adjusted(-expandSize, -expandSize, expandSize, expandSize)));
 
-    QPointF clicked_point = event->buttonDownScenePos(Qt::LeftButton);
+    QPointF clicked_point = event->scenePos();
     qDebug() << clicked_point << ' ';
     QGraphicsItem * want = itemAt(clicked_point, QTransform());
     if (want) {
         qDebug() << want->scenePos() << Qt::endl;
         want->setZValue(standard_z);
-        standard_z += 1e-5;
+        standard_z += 1e-4;
         qDebug() << standard_z << Qt::endl;
     }
     else qDebug() << "nullptr" << Qt::endl;
 
 
-    // addLine(topLine, myPen);
-    // addLine(leftLine, myPen);
-    // addLine(rightLine, myPen);
-    // addLine(bottomLine, myPen);
-
-    qDebug() << width() << ' ' << height() << Qt::endl;
-    qDebug() << sceneRect().bottom() << ' ' << sceneRect().top() << ' ' << sceneRect().left() << ' ' << sceneRect().right() << Qt::endl;
-    qDebug() << itemsBoundingRect().bottom() << ' ' << itemsBoundingRect().top() << ' ' << itemsBoundingRect().left() << ' ' << itemsBoundingRect().right() << Qt::endl;
-
     dragged = 1;
     lastClickedPoint = event->scenePos();
-    qDebug() << "dragged " << lastClickedPoint << Qt::endl;
+    // qDebug() << "dragged " << lastClickedPoint << Qt::endl;
     increseBoundray();
 
     QGraphicsScene::mousePressEvent(event);
 }
 
 void MyScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
-    QGraphicsScene::mouseReleaseEvent(event);
-    qDebug() << "released " << lastClickedPoint << Qt::endl;
+    // qDebug() << "released " << lastClickedPoint << Qt::endl;
     if(dragged) dragged = 0;
+    QGraphicsScene::mouseReleaseEvent(event);
 }
 
 void MyScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
     if(!dragged){
         return;
     }
-    qDebug() << "dragging " << Qt::endl;
+    // qDebug() << "dragging " << Qt::endl;
     increseBoundray();
     QGraphicsScene::mouseMoveEvent(event);
 }

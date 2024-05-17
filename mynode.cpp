@@ -6,7 +6,6 @@ MyNode::MyNode(QGraphicsItem *parent): QGraphicsEllipseItem(0, 0, 50, 50, parent
     // Make sure that 2 * radius == what in the constructor above ||.
     setPen(QPen(QBrush(Qt::black, Qt::SolidPattern), penSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     setBrush(Qt::white);
-    setFlag(QGraphicsItem::ItemIsMovable);
 
     name = new QGraphicsSimpleTextItem("NodeName", this);
     name->setFont(QFont("Microsoft Yahei", -1, QFont::Bold));

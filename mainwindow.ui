@@ -64,7 +64,7 @@
        <bool>true</bool>
       </property>
       <attribute name="buttonGroup">
-       <string notr="true">toolsGroup</string>
+       <string notr="true">modesGroup</string>
       </attribute>
      </widget>
     </item>
@@ -87,7 +87,7 @@
        <bool>true</bool>
       </property>
       <attribute name="buttonGroup">
-       <string notr="true">toolsGroup</string>
+       <string notr="true">modesGroup</string>
       </attribute>
      </widget>
     </item>
@@ -110,7 +110,7 @@
        <bool>true</bool>
       </property>
       <attribute name="buttonGroup">
-       <string notr="true">toolsGroup</string>
+       <string notr="true">modesGroup</string>
       </attribute>
      </widget>
     </item>
@@ -136,7 +136,7 @@
        <enum>Qt::ToolButtonIconOnly</enum>
       </property>
       <attribute name="buttonGroup">
-       <string notr="true">toolsGroup</string>
+       <string notr="true">modesGroup</string>
       </attribute>
      </widget>
     </item>
@@ -179,6 +179,6 @@
  </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="toolsGroup"/>
+  <buttongroup name="modesGroup"/>
  </buttongroups>
 </ui>

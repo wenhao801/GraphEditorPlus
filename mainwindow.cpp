@@ -10,6 +10,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->toolBar->addWidget(ui->moveMode); ui->modesGroup->setId(ui->moveMode, 0);
+    ui->toolBar->addWidget(ui->selectMode); ui->modesGroup->setId(ui->selectMode, 1);
+    ui->toolBar->addWidget(ui->addMode); ui->modesGroup->setId(ui->addMode, 2);
+    ui->toolBar->addWidget(ui->deleteMode); ui->modesGroup->setId(ui->deleteMode, 3);
+    connect(ui->modesGroup, &QButtonGroup::buttonClicked, this, &MainWindow::switchMode);
 
     scene = new MyScene(this, ui->graphicsView);
     ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -17,29 +22,18 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
-
-    ui->toolBar->addWidget(ui->moveMode);
-    ui->toolBar->addWidget(ui->selectMode);
-    ui->toolBar->addWidget(ui->addMode);
-    ui->toolBar->addWidget(ui->deleteMode);
 
     scene->setBackgroundBrush(Qt::white);
-
-    MyNode* u = scene->addNode(0, 0);
-
-    MyNode* v = scene->addNode(80, 80);
-
-    scene->addEdge(u, v);
-
-    MyNode *w = scene->addNode(-120, 40);
-    scene->addEdge(u, w);
 
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::switchMode() {
+    scene->switchMode(MyScene::CursorMode(ui->modesGroup->checkedId()));
 }
 
 void MainWindow::on_showSub_clicked()

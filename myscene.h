@@ -22,8 +22,13 @@ public:
     MyNode* addNode(qreal x, qreal y);
     MyEdge* addEdge(MyNode *u, MyNode *v);
 
+    enum CursorMode { MoveMode, SelectMode, AddMode, DeleteMode } curMode;
+    void switchMode(CursorMode mode);
 
 private:
+    std::set <MyNode*> nodes;
+    std::set <MyEdge*> edges;
+
     bool dragged;
     QGraphicsView *qgView;
     void increseBoundray();
@@ -31,7 +36,7 @@ private:
     int extendAmount;
     QPointF lastClickedPoint;
 
-    float standard_z = 1e-5;
+    qreal standard_z = 1e-5;
 };
 
 #endif // MYSCENE_H

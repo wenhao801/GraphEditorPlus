@@ -21,6 +21,7 @@ public:
     ~MainWindow();
 
     void subClicked();
+    void switchMode();
 
 private slots:
     void on_showSub_clicked();
