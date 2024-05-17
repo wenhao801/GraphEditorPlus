@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "mydialog1.h"
+#include <qicon.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,9 +18,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
 
-    scene->setBackgroundBrush(Qt::white);
+    ui->toolBar->addWidget(ui->toolButton_1);
+    ui->toolBar->addWidget(ui->toolButton_2);
+    ui->toolBar->addWidget(ui->toolButton_3);
+    ui->toolBar->addWidget(ui->toolButton_4);
 
-    ui->toolBar->addWidget(ui->toolButton);
+    scene->setBackgroundBrush(Qt::white);
 
     MyNode* u = scene->addNode(0, 0);
 
