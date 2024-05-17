@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>pictures/select.png</file>
+        <file>pictures/add.png</file>
+        <file>pictures/delete.png</file>
+        <file>pictures/move.png</file>
+        <file>pictures/save.png</file>
+        <file>pictures/appIcon.png</file>
+        <file>pictures/APP_ICON.ico</file>
+    </qresource>
+</RCC>

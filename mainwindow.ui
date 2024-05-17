@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>GraphEditorMinus</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="GraphEditorMinus.qrc">
+    <normaloff>:/pictures/appIcon.png</normaloff>:/pictures/appIcon.png</iconset>
   </property>
   <property name="toolButtonStyle">
    <enum>Qt::ToolButtonIconOnly</enum>
@@ -36,13 +40,16 @@
      </widget>
     </item>
     <item>
-     <widget class="QToolButton" name="toolButton_1">
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
+    <item>
+     <widget class="QToolButton" name="moveMode">
       <property name="text">
        <string/>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>C:/Users/wenha/Desktop/add.png</normaloff>C:/Users/wenha/Desktop/add.png</iconset>
+       <iconset resource="GraphEditorMinus.qrc">
+        <normaloff>:/pictures/move.png</normaloff>:/pictures/move.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -57,21 +64,18 @@
        <bool>true</bool>
       </property>
       <attribute name="buttonGroup">
-       <string notr="true">modeGroup</string>
+       <string notr="true">toolsGroup</string>
       </attribute>
      </widget>
     </item>
     <item>
-     <widget class="QGraphicsView" name="graphicsView"/>
-    </item>
-    <item>
-     <widget class="QToolButton" name="toolButton_2">
+     <widget class="QToolButton" name="selectMode">
       <property name="text">
        <string/>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>C:/Users/wenha/Desktop/62308.png</normaloff>C:/Users/wenha/Desktop/62308.png</iconset>
+       <iconset resource="GraphEditorMinus.qrc">
+        <normaloff>:/pictures/select.png</normaloff>:/pictures/select.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -83,19 +87,18 @@
        <bool>true</bool>
       </property>
       <attribute name="buttonGroup">
-       <string notr="true">modeGroup</string>
+       <string notr="true">toolsGroup</string>
       </attribute>
      </widget>
     </item>
     <item>
-     <widget class="QToolButton" name="toolButton_3">
+     <widget class="QToolButton" name="addMode">
       <property name="text">
        <string/>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>C:/Users/wenha/Desktop/colorful_31488.png</normaloff>
-        <selectedon>pictures/add.png</selectedon>C:/Users/wenha/Desktop/colorful_31488.png</iconset>
+       <iconset resource="GraphEditorMinus.qrc">
+        <normaloff>:/pictures/add.png</normaloff>:/pictures/add.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -107,19 +110,18 @@
        <bool>true</bool>
       </property>
       <attribute name="buttonGroup">
-       <string notr="true">modeGroup</string>
+       <string notr="true">toolsGroup</string>
       </attribute>
      </widget>
     </item>
     <item>
-     <widget class="QToolButton" name="toolButton_4">
+     <widget class="QToolButton" name="deleteMode">
       <property name="text">
        <string/>
       </property>
       <property name="icon">
-       <iconset>
-        <normaloff>C:/Users/wenha/Desktop/62308_inv.png</normaloff>
-        <selectedon>pictures/delete.png</selectedon>C:/Users/wenha/Desktop/62308_inv.png</iconset>
+       <iconset resource="GraphEditorMinus.qrc">
+        <normaloff>:/pictures/delete.png</normaloff>:/pictures/delete.png</iconset>
       </property>
       <property name="iconSize">
        <size>
@@ -134,7 +136,7 @@
        <enum>Qt::ToolButtonIconOnly</enum>
       </property>
       <attribute name="buttonGroup">
-       <string notr="true">modeGroup</string>
+       <string notr="true">toolsGroup</string>
       </attribute>
      </widget>
     </item>
@@ -172,9 +174,11 @@
    </attribute>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="GraphEditorMinus.qrc"/>
+ </resources>
  <connections/>
  <buttongroups>
-  <buttongroup name="modeGroup"/>
+  <buttongroup name="toolsGroup"/>
  </buttongroups>
 </ui>
