@@ -14,9 +14,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->addWidget(ui->selectMode); ui->modesGroup->setId(ui->selectMode, 1);
     ui->toolBar->addWidget(ui->addMode); ui->modesGroup->setId(ui->addMode, 2);
     ui->toolBar->addWidget(ui->deleteMode); ui->modesGroup->setId(ui->deleteMode, 3);
-    connect(ui->modesGroup, &QButtonGroup::buttonClicked, this, &MainWindow::switchMode);
+    ui->toolBar->addSeparator();
+    ui->toolBar->addWidget(ui->toggleDirect);
 
     scene = new MyScene(this, ui->graphicsView);
+
+    connect(ui->modesGroup, &QButtonGroup::buttonClicked, this, &MainWindow::switchMode);
+    connect(ui->toggleDirect, &QToolButton::clicked, scene, &MyScene::toggleDirect);
+
     ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     ui->graphicsView->setScene(scene);
 

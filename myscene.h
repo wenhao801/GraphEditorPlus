@@ -22,8 +22,10 @@ public:
     MyNode* addNode(qreal x, qreal y);
     MyEdge* addEdge(MyNode *u, MyNode *v);
 
-    enum CursorMode { MoveMode, SelectMode, AddMode, DeleteMode } curMode;
+    enum CursorMode { MoveMode, SelectMode, AddMode, DeleteMode } curMode = MoveMode;
     void switchMode(CursorMode mode);
+    bool directed = 1;
+    void toggleDirect();
 
 private:
     std::set <MyNode*> nodes;

@@ -7,7 +7,6 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q)
 {
     setSceneRect(-500, -500, 1000, 1000);
 
-    curMode = MoveMode;
     dragged = 0;
     boundrayWidth = 10;
     extendAmount = 1000;
@@ -33,7 +32,7 @@ MyNode* MyScene::addNode(qreal x, qreal y) {
     return node;
 }
 MyEdge* MyScene::addEdge(MyNode *u, MyNode *v) {
-    MyEdge* edge = new MyEdge(u, v);
+    MyEdge* edge = new MyEdge(this, u, v);
     addItem(edge);
     edges.insert(edge);
     u->outEdge.insert(edge), v->inEdge.insert(edge);
@@ -53,6 +52,11 @@ void MyScene::switchMode(CursorMode mode) {
         for (auto p: nodes) p->setFlag(QGraphicsItem::ItemIsMovable);
         qgView->setDragMode(QGraphicsView::ScrollHandDrag);
     }
+}
+
+void MyScene::toggleDirect() {
+    directed ^= 1;
+    for (auto e: edges) e->update();
 }
 
 void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
