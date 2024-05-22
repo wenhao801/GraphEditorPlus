@@ -10,15 +10,21 @@
 
 #include <set>
 
+class MyScene;
+
 class MyEdge;
 
 class MyNode : public QGraphicsEllipseItem
 {
 public:
-    MyNode(QGraphicsItem *parent = nullptr);
+    enum { Type = UserType + 1 };
+    int type() const override { return Type; }
+
+    MyNode(MyScene *scene, QGraphicsItem *parent = nullptr);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
+    MyScene *scene;
     QGraphicsSimpleTextItem *name;
 
     const int penSize = 5, radius = 25;

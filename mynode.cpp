@@ -1,8 +1,9 @@
 #include "mynode.h"
 
+#include "myscene.h"
 #include "myedge.h"
 
-MyNode::MyNode(QGraphicsItem *parent): QGraphicsEllipseItem(0, 0, 50, 50, parent) {
+MyNode::MyNode(MyScene *_scene, QGraphicsItem *parent): QGraphicsEllipseItem(0, 0, 50, 50, parent), scene(_scene) {
     // Make sure that 2 * radius == what in the constructor above ||.
     setPen(QPen(QBrush(Qt::black, Qt::SolidPattern), penSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     setBrush(Qt::white);

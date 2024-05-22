@@ -21,6 +21,9 @@ public:
 
     MyNode* addNode(qreal x, qreal y);
     MyEdge* addEdge(MyNode *u, MyNode *v);
+    void delEdge(MyEdge *);
+    void delNode(MyNode *);
+    void delItem(QGraphicsItem *);
 
     enum CursorMode { MoveMode, SelectMode, AddMode, DeleteMode } curMode = MoveMode;
     void switchMode(CursorMode mode);

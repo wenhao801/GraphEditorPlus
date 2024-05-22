@@ -3,7 +3,7 @@
 #include "myscene.h"
 #include "mynode.h"
 
-MyEdge::MyEdge(MyScene *_scene, MyNode *s, MyNode *e, QGraphicsItem *parent): QGraphicsLineItem(parent), scene(_scene), startNode(s), endNode(e) {
+MyEdge::MyEdge(MyScene *_scene, MyNode *s, MyNode *e, QGraphicsItem *parent): QGraphicsLineItem(parent), startNode(s), endNode(e), scene(_scene) {
     setPen(QPen(QBrush(Qt::black, Qt::SolidPattern), penSize, Qt::SolidLine));
     weight = new QGraphicsSimpleTextItem("EdgeWeight", this);
 }
