@@ -9,23 +9,23 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    insertfromtext.cpp \
     main.cpp \
     mainwindow.cpp \
-    mydialog1.cpp \
     myedge.cpp \
     mynode.cpp \
     myscene.cpp
 
 HEADERS += \
+    insertfromtext.h \
     mainwindow.h \
-    mydialog1.h \
     myedge.h \
     mynode.h \
     myscene.h
 
 FORMS += \
-    mainwindow.ui \
-    mydialog1.ui
+    insertfromtext.ui \
+    mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

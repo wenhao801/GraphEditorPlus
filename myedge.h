@@ -21,9 +21,10 @@ public:
 
     MyScene *scene;
 
-    MyEdge(MyScene *, MyNode *s, MyNode *e, QGraphicsItem *parent = nullptr);
+    MyEdge(MyScene *, MyNode *s, MyNode *e, QString _weight, QGraphicsItem *parent = nullptr);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void updateMode();
     MyNode * operator() (MyNode *u) { return u == startNode ? endNode : startNode; }
 };
 

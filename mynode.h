@@ -20,9 +20,10 @@ public:
     enum { Type = UserType + 1 };
     int type() const override { return Type; }
 
-    MyNode(MyScene *scene, QGraphicsItem *parent = nullptr);
+    MyNode(MyScene *, QString _name, QGraphicsItem *parent = nullptr);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void updateMode();
 
     MyScene *scene;
     QGraphicsSimpleTextItem *name;

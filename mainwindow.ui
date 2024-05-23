@@ -26,13 +26,6 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QPushButton" name="showSub">
-      <property name="text">
-       <string>Show SubWindow</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QPushButton" name="addNode">
       <property name="text">
        <string>Add Node</string>
@@ -143,7 +136,7 @@
     <item>
      <widget class="QToolButton" name="toggleDirect">
       <property name="text">
-       <string>...</string>
+       <string/>
       </property>
       <property name="iconSize">
        <size>
@@ -170,6 +163,28 @@
      <height>20</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionOpen"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <widget class="QMenu" name="menuInsert">
+     <property name="title">
+      <string>Insert...</string>
+     </property>
+     <addaction name="actionFrom_Text"/>
+    </widget>
+    <addaction name="menuInsert"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -192,6 +207,26 @@
     <bool>false</bool>
    </attribute>
   </widget>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionFrom_Text">
+   <property name="text">
+    <string>From Text</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="GraphEditorMinus.qrc"/>

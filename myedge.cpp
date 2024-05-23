@@ -3,9 +3,11 @@
 #include "myscene.h"
 #include "mynode.h"
 
-MyEdge::MyEdge(MyScene *_scene, MyNode *s, MyNode *e, QGraphicsItem *parent): QGraphicsLineItem(parent), startNode(s), endNode(e), scene(_scene) {
+MyEdge::MyEdge(MyScene *_scene, MyNode *s, MyNode *e, QString _weight, QGraphicsItem *parent):
+    QGraphicsLineItem(parent), startNode(s), endNode(e), scene(_scene) {
     setPen(QPen(QBrush(Qt::black, Qt::SolidPattern), penSize, Qt::SolidLine));
-    weight = new QGraphicsSimpleTextItem("EdgeWeight", this);
+    weight = new QGraphicsSimpleTextItem(_weight, this);
+    updateMode();
 }
 
 void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -28,5 +30,23 @@ void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
         painter->setBrush(QBrush(Qt::black, Qt::SolidPattern));
         painter->drawPath(path);
+    }
+}
+
+void MyEdge::updateMode() {
+    if (scene->curMode == MyScene::MoveMode) {
+        setFlag(QGraphicsItem::ItemIsMovable, 0);
+        setFlag(QGraphicsItem::ItemIsSelectable, 0);
+    }
+    if (scene->curMode == MyScene::SelectMode) {
+        setFlag(QGraphicsItem::ItemIsMovable, 0);
+        setFlag(QGraphicsItem::ItemIsSelectable, 1);
+    }
+    if (scene->curMode == MyScene::AddMode) {
+
+    }
+    if (scene->curMode == MyScene::DeleteMode) {
+        setFlag(QGraphicsItem::ItemIsMovable, 0);
+        setFlag(QGraphicsItem::ItemIsSelectable, 1);
     }
 }

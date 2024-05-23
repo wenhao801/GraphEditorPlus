@@ -24,9 +24,9 @@ public:
     void switchMode();
 
 private slots:
-    void on_showSub_clicked();
-
     void on_addNode_clicked();
+
+    void on_actionFrom_Text_triggered();
 
 private:
     Ui::MainWindow *ui;

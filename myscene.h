@@ -19,8 +19,8 @@ protected:
 public:
     explicit MyScene(QObject *parent = nullptr, QGraphicsView *q = nullptr);
 
-    MyNode* addNode(qreal x, qreal y);
-    MyEdge* addEdge(MyNode *u, MyNode *v);
+    MyNode* addNode(qreal x, qreal y, QString _name = nullptr);
+    MyEdge* addEdge(MyNode *u, MyNode *v, QString _weight = nullptr);
     void delEdge(MyEdge *);
     void delNode(MyNode *);
     void delItem(QGraphicsItem *);
@@ -31,6 +31,7 @@ public:
     void toggleDirect();
 
 private:
+    QMap <QString, MyNode*> ids;
     std::set <MyNode*> nodes;
     std::set <MyEdge*> edges;
 
@@ -42,6 +43,7 @@ private:
     QPointF lastClickedPoint;
 
     qreal standard_z = 1e-5;
+    int defaultNodeID = 0;
 };
 
 #endif // MYSCENE_H

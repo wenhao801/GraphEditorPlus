@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "mydialog1.h"
+#include "insertfromtext.h"
+
 #include <qicon.h>
 #include <QToolButton>
 
@@ -41,23 +42,18 @@ void MainWindow::switchMode() {
     scene->switchMode(MyScene::CursorMode(ui->modesGroup->checkedId()));
 }
 
-void MainWindow::on_showSub_clicked()
-{
-    MyDialog1 *sub = new MyDialog1(this);
-    connect(sub, &MyDialog1::sendSignalToMain, this, &MainWindow::subClicked);
-    sub->setModal(1);
-    sub->show();
-}
-
-void MainWindow::subClicked()
-{
-    qDebug() << "main called";
-}
-
 void MainWindow::on_addNode_clicked()
 {
     qreal rx = QRandomGenerator::global()->generateDouble() * 200 - 100;
     qreal ry = QRandomGenerator::global()->generateDouble() * 200 - 100;
     scene->addNode(rx, ry);
+}
+
+
+void MainWindow::on_actionFrom_Text_triggered()
+{
+    // qDebug() << "Inserting from text" << Qt::endl;
+    InsertFromText window(this);
+    window.exec();
 }
 

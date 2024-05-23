@@ -2,6 +2,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include<QListWidget>
 
+#include <QRandomGenerator>
+
 MyScene::MyScene(QObject *parent, QGraphicsView *q)
     : QGraphicsScene(parent), qgView(q)
 {
@@ -12,27 +14,40 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q)
     extendAmount = 1000;
 
 
-    MyNode* u = addNode(0, 0);
+    std::vector <MyNode*> tmp;
+    for (int i = 0; i < 5; i++) {
+        MyNode *now = addNode(QRandomGenerator::global()->bounded(-200, 200), QRandomGenerator::global()->bounded(-200, 200));
+        if (i) addEdge(now, tmp[QRandomGenerator::global()->bounded(0, i)]);
+        tmp.push_back(now);
+    }
 
-    MyNode* v = addNode(80, 80);
+    // MyNode* u = addNode(0, 0);
 
-    addEdge(u, v);
+    // MyNode* v = addNode(80, 80);
 
-    MyNode *w = addNode(-120, 40);
-    addEdge(u, w);
+    // addEdge(u, v);
+
+    // MyNode *w = addNode(-120, 40);
+    // addEdge(u, w);
 
     switchMode(curMode);
 }
 
-MyNode* MyScene::addNode(qreal x, qreal y) {
-    MyNode* node = new MyNode(this);
+MyNode* MyScene::addNode(qreal x, qreal y, QString name) {
+    if (name.isNull()) {
+        while (ids.count(QString::number(++defaultNodeID)));
+        name = QString::number(defaultNodeID);
+    }
+    if (ids.count(name)) return nullptr;
+    MyNode* node = new MyNode(this, name);
+    ids[name] = node;
     addItem(node);
     nodes.insert(node);
     node->setPos(x, y);
     return node;
 }
-MyEdge* MyScene::addEdge(MyNode *u, MyNode *v) {
-    MyEdge* edge = new MyEdge(this, u, v);
+MyEdge* MyScene::addEdge(MyNode *u, MyNode *v, QString weight) {
+    MyEdge* edge = new MyEdge(this, u, v, weight);
     addItem(edge);
     edges.insert(edge);
     u->outEdge.insert(edge), v->inEdge.insert(edge);
@@ -48,6 +63,7 @@ void MyScene::delEdge(MyEdge *e) {
 void MyScene::delNode(MyNode *n) {
     removeItem(n);
     nodes.erase(n);
+    ids.erase(ids.find(n->name->text()));
     std::vector <MyEdge*> es;
     for (auto e: n->outEdge) es.push_back(e);
     for (auto e: n->inEdge) es.push_back(e);
@@ -69,27 +85,22 @@ void MyScene::delItem(QGraphicsItem *x) {
 }
 
 void MyScene::switchMode(CursorMode mode) {
-    // exit current mode
-    if (curMode == MoveMode) {
-        for (auto n: nodes) n->setFlag(QGraphicsItem::ItemIsMovable, 0);
-        qgView->setDragMode(QGraphicsView::NoDrag);
-    }
-    if (curMode == DeleteMode) {
-        for (auto n: nodes) n->setFlag(QGraphicsItem::ItemIsSelectable, 0);
-        for (auto e: edges) e->setFlag(QGraphicsItem::ItemIsSelectable, 0);
-    }
-
     // enter new mode
     curMode = mode;
     if (curMode == MoveMode) {
-        for (auto n: nodes) n->setFlag(QGraphicsItem::ItemIsMovable);
         qgView->setDragMode(QGraphicsView::ScrollHandDrag);
     }
-    if (curMode == DeleteMode) {
-        for (auto n: nodes) n->setFlag(QGraphicsItem::ItemIsSelectable);
-        for (auto e: edges) e->setFlag(QGraphicsItem::ItemIsSelectable);
+    if (curMode == SelectMode) {
         qgView->setDragMode(QGraphicsView::RubberBandDrag);
     }
+    if (curMode == AddMode) {
+        qgView->setDragMode(QGraphicsView::NoDrag);
+    }
+    if (curMode == DeleteMode) {
+        qgView->setDragMode(QGraphicsView::RubberBandDrag);
+    }
+    for (auto n: nodes) n->updateMode();
+    for (auto e: edges) e->updateMode();
 }
 
 void MyScene::toggleDirect() {
