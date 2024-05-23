@@ -25,6 +25,8 @@ public:
     void delNode(MyNode *);
     void delItem(QGraphicsItem *);
 
+    void insertFromText(QString);
+
     enum CursorMode { MoveMode, SelectMode, AddMode, DeleteMode } curMode = MoveMode;
     void switchMode(CursorMode mode);
     bool directed = 1;

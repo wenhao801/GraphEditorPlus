@@ -84,6 +84,20 @@ void MyScene::delItem(QGraphicsItem *x) {
     }
 }
 
+void MyScene::insertFromText(QString text) {
+    QStringList lines = text.split('\n', Qt::SkipEmptyParts);
+    for (auto line: lines) {
+        QStringList words = line.split(' ', Qt::SkipEmptyParts);
+        if (words.size() <= 3) {
+            addNode(QRandomGenerator::global()->bounded(-200, 200), QRandomGenerator::global()->bounded(-200, 200), words[0]);
+            if (words.size() >= 2) {
+                addNode(QRandomGenerator::global()->bounded(-200, 200), QRandomGenerator::global()->bounded(-200, 200), words[1]);
+                addEdge(ids[words[0]], ids[words[1]], words.size() == 3 ? words[2] : nullptr);
+            }
+        }
+    }
+}
+
 void MyScene::switchMode(CursorMode mode) {
     // enter new mode
     curMode = mode;

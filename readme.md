@@ -8,7 +8,7 @@ Inspired by [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/),
 
 - 通过鼠标点击，绘制单个点/边。
 - 批量修改：
-  - 通过文本批量加点/加边，类似于 [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/) 中的方式。
+  - ~~通过文本批量加点/加边，类似于 [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/) 中的方式。~~ 已经实现，但尚不知道怎么确定新加的点的位置：一个思路是选择 View 内离最近的点距离最大的点？
   - 可以加入一些小功能，例如输入 `[3-9]` 批量加入编号为 `3, 4, ..., 9` 的点。
   - 通过框选，将框中的点直接互相连成链/完全图/……
 - 批量修改点编号的功能，类似于几何画板。
@@ -18,7 +18,7 @@ Inspired by [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/),
 - ~~通过鼠标点击，删除单个点/边。~~
 - 批量修改：
   - 直接编辑当前图对应的文本，进行修改。
-  - 通过框选，批量对与选择框相交的边进行删除。
+  - ~~通过框选，批量对与选择框相交的边进行删除。~~
 
 ~~实现图上点、边可以拖拽。~~
 
@@ -48,9 +48,9 @@ Inspired by [CSAcademy's graph editor](https://csacademy.com/app/graph_editor/),
 
 ```cpp
 struct Node {
-    string name;
+    string name; // 相当于 id，每个点应该不一样
     set <Edge*> in, out; // 可能有按地址找边/按指向的点找边，因此可能之后再写数据结构
-    // 无向图时 in === out
+    // 无向图时不区分
 };
 ```
 
@@ -76,9 +76,9 @@ TODO：将点拖出边框后边 会 断 掉，~~拖得太快有残影？~~ 部�
 
 **在非选择模式下，高亮鼠标位置的点/边？**
 
-被选择的点/边 现在会有一个虚线框住 boundingRect，太丑了 改成点/边颜色变化
+被选择的点/边 现在会有一个虚线框住 boundingRect，太丑了，需要改成点/边颜色变化
 
-Bug：切换模式后 加点/加边不会 setFlag
+~~Bug：切换模式后 加点/加边不会 setFlag~~ 现在每次切换模式后会调用点/边中的 updateMode 函数
 
 ## 模式设计
 

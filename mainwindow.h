@@ -23,6 +23,8 @@ public:
     void subClicked();
     void switchMode();
 
+    MyScene *scene;
+
 private slots:
     void on_addNode_clicked();
 
@@ -31,6 +33,5 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    MyScene *scene;
 };
 #endif // MAINWINDOW_H

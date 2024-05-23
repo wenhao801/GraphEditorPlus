@@ -1,11 +1,14 @@
 #include "insertfromtext.h"
 #include "ui_insertfromtext.h"
 
+#include "mainwindow.h"
+
 InsertFromText::InsertFromText(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::InsertFromText)
 {
     ui->setupUi(this);
+    scene = ((MainWindow*)parent)->scene;
 }
 
 InsertFromText::~InsertFromText()
@@ -16,10 +19,6 @@ InsertFromText::~InsertFromText()
 void InsertFromText::on_buttonBox_accepted()
 {
     QString text = ui->plainTextEdit->document()->toPlainText();
-    QStringList lines = text.split('\n', Qt::SkipEmptyParts);
-    for (auto line: lines) {
-        QStringList words = line.split(' ', Qt::SkipEmptyParts);
-
-    }
+    scene->insertFromText(text);
 }
 

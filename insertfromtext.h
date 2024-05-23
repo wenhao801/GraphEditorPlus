@@ -7,6 +7,8 @@ namespace Ui {
 class InsertFromText;
 }
 
+class MyScene;
+
 class InsertFromText : public QDialog
 {
     Q_OBJECT
@@ -20,6 +22,7 @@ private slots:
 
 private:
     Ui::InsertFromText *ui;
+    MyScene* scene;
 };
 
 #endif // INSERTFROMTEXT_H
