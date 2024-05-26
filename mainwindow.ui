@@ -152,6 +152,27 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QLabel" name="spStatus">
+      <property name="text">
+       <string>Directed graph</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="edgeCount">
+      <property name="text">
+       <string>0 Edges</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="nodeCount">
+      <property name="text">
+       <string>0 Nodes</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">

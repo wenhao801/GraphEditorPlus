@@ -5,18 +5,42 @@
 
 MyNode::MyNode(MyScene *_scene, QString _name, QGraphicsItem *parent): QGraphicsEllipseItem(0, 0, 50, 50, parent), scene(_scene) {
     // Make sure that 2 * radius == what in the constructor above ||.
-    setPen(QPen(QBrush(Qt::black, Qt::SolidPattern), penSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     setBrush(Qt::white);
 
     name = new QGraphicsSimpleTextItem(_name, this);
     name->setFont(QFont("Microsoft Yahei", -1, QFont::Bold));
     name->setPos(boundingRect().center() - name->boundingRect().center());
     updateMode();
+    setAcceptHoverEvents(1);
+}
+
+void MyNode::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
+    qDebug() << "enter" << Qt::endl;
+
+    QGraphicsEllipseItem::hoverEnterEvent(event);
+}
+void MyNode::hoverMoveEvent(QGraphicsSceneHoverEvent *event) {
+    qDebug() << "move" << Qt::endl;
+
+    QGraphicsEllipseItem::hoverEnterEvent(event);
+}
+void MyNode::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+    qDebug() << "leave" << Qt::endl;
+
+    QGraphicsEllipseItem::hoverLeaveEvent(event);
 }
 
 void MyNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    QStyleOptionGraphicsItem *op = (QStyleOptionGraphicsItem *)option;
+    auto color = QColor(0, 0, 0);
+    if (option->state & QStyle::State_Selected) {
+        color = QColor(57, 197, 187);
+    }
+    setPen(QPen(QBrush(color, Qt::SolidPattern), penSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    op->state &= ~QStyle::State_Selected;
+
     painter->setRenderHint(QPainter::Antialiasing);
-    QGraphicsEllipseItem::paint(painter, option, widget);
+    QGraphicsEllipseItem::paint(painter, op, widget);
 }
 
 void MyNode::updateMode() {

@@ -16,6 +16,11 @@ class MyEdge;
 
 class MyNode : public QGraphicsEllipseItem
 {
+
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *) override;
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *) override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *) override;
 public:
     enum { Type = UserType + 1 };
     int type() const override { return Type; }

@@ -5,12 +5,19 @@
 
 MyEdge::MyEdge(MyScene *_scene, MyNode *s, MyNode *e, QString _weight, QGraphicsItem *parent):
     QGraphicsLineItem(parent), startNode(s), endNode(e), scene(_scene) {
-    setPen(QPen(QBrush(Qt::black, Qt::SolidPattern), penSize, Qt::SolidLine));
     weight = new QGraphicsSimpleTextItem(_weight, this);
     updateMode();
 }
 
 void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    QStyleOptionGraphicsItem *op = (QStyleOptionGraphicsItem *)option;
+    auto color = QColor(0, 0, 0);
+    if (option->state & QStyle::State_Selected) {
+        color = QColor(57, 197, 187);
+    }
+    setPen(QPen(QBrush(color, Qt::SolidPattern), penSize, Qt::SolidLine));
+    op->state &= ~QStyle::State_Selected;
+
     QLineF l(startNode->sceneBoundingRect().center(), endNode->sceneBoundingRect().center());
 
     QPointF p1 = l.p1() + QLineF::fromPolar(startNode->radius + startNode->penSize - 4, l.angle()).p2();
@@ -19,7 +26,7 @@ void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
     weight->setPos(boundingRect().center() - weight->boundingRect().center());
     painter->setRenderHint(QPainter::Antialiasing);
-    QGraphicsLineItem::paint(painter, option, widget);
+    QGraphicsLineItem::paint(painter, op, widget);
 
     if (scene->directed) {
         QPainterPath path;
@@ -28,7 +35,7 @@ void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
         QLineF rightl = l.fromPolar(15, l.angle() - 160);
         path.lineTo(p2 + leftl.p2()); path.lineTo(p2 + rightl.p2()); path.lineTo(p2);
 
-        painter->setBrush(QBrush(Qt::black, Qt::SolidPattern));
+        painter->setBrush(QBrush(color, Qt::SolidPattern));
         painter->drawPath(path);
     }
 }

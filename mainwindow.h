@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QRandomGenerator>
+#include <QStatusBar>
 
 #include "myscene.h"
 

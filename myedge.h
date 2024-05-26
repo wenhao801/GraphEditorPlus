@@ -4,6 +4,7 @@
 #include <QGraphicsLineItem>
 #include <QPen>
 #include <QBrush>
+#include <QStyleOption>
 
 
 class MyScene;
@@ -25,7 +26,7 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void updateMode();
-    MyNode * operator() (MyNode *u) { return u == startNode ? endNode : startNode; }
+    MyNode* ad(MyNode *u) { return u == startNode ? endNode : startNode; }
 };
 
 #endif // MYEDGE_H

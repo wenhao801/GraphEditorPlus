@@ -4,6 +4,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsItem>
+#include <QLabel>
 
 #include "mynode.h"
 #include "myedge.h"
@@ -17,7 +18,7 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 public:
-    explicit MyScene(QObject *parent = nullptr, QGraphicsView *q = nullptr);
+    explicit MyScene(QObject *parent = nullptr, QGraphicsView *q = nullptr, QLabel *_node = nullptr, QLabel *_edge = nullptr, QLabel *_sp = nullptr);
 
     MyNode* addNode(qreal x, qreal y, QString _name = nullptr);
     MyEdge* addEdge(MyNode *u, MyNode *v, QString _weight = nullptr);
@@ -32,7 +33,11 @@ public:
     bool directed = 1;
     void toggleDirect();
 
+    void updateStatusBar();
+
 private:
+    int isForest();
+
     QMap <QString, MyNode*> ids;
     std::set <MyNode*> nodes;
     std::set <MyEdge*> edges;
@@ -46,6 +51,8 @@ private:
 
     qreal standard_z = 1e-5;
     int defaultNodeID = 0;
+
+    QLabel *nodeCount, *edgeCount, *spStatus;
 };
 
 #endif // MYSCENE_H

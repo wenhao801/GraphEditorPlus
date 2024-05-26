@@ -1,17 +1,19 @@
 #include "myscene.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include<QListWidget>
 
 #include <QRandomGenerator>
 
-MyScene::MyScene(QObject *parent, QGraphicsView *q)
-    : QGraphicsScene(parent), qgView(q)
+MyScene::MyScene(QObject *parent, QGraphicsView *q, QLabel *_node, QLabel *_edge, QLabel *sp)
+    : QGraphicsScene(parent), qgView(q), nodeCount(_node), edgeCount(_edge), spStatus(sp)
 {
     setSceneRect(-500, -500, 1000, 1000);
 
     dragged = 0;
     boundrayWidth = 10;
     extendAmount = 1000;
+
 
 
     std::vector <MyNode*> tmp;
@@ -33,17 +35,37 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q)
     switchMode(curMode);
 }
 
+void MyScene::updateStatusBar() {
+    nodeCount->setText(QString::number(nodes.size()) + " Node" + (nodes.size() >= 2 ? "s" : ""));
+    edgeCount->setText(QString::number(edges.size()) + " Edge" + (edges.size() >= 2 ? "s" : ""));
+    if (nodes.empty() && edges.empty())
+        spStatus->setText("Empty graph");
+    else if (edges.empty())
+        spStatus->setText("Independent nodes");
+    else if (!directed) {
+        int fr = isForest();
+        if (fr == 1) spStatus->setText("Tree");
+        else if (fr) spStatus->setText("Forest with " + QString::number(fr) + " trees");
+        else spStatus->setText("Undirected graph");
+    }
+    else {
+        spStatus->setText("Directed graph");
+    }
+}
+
 MyNode* MyScene::addNode(qreal x, qreal y, QString name) {
     if (name.isNull()) {
         while (ids.count(QString::number(++defaultNodeID)));
         name = QString::number(defaultNodeID);
     }
     if (ids.count(name)) return nullptr;
+
     MyNode* node = new MyNode(this, name);
     ids[name] = node;
     addItem(node);
     nodes.insert(node);
     node->setPos(x, y);
+    updateStatusBar();
     return node;
 }
 MyEdge* MyScene::addEdge(MyNode *u, MyNode *v, QString weight) {
@@ -51,6 +73,7 @@ MyEdge* MyScene::addEdge(MyNode *u, MyNode *v, QString weight) {
     addItem(edge);
     edges.insert(edge);
     u->outEdge.insert(edge), v->inEdge.insert(edge);
+    updateStatusBar();
     return edge;
 }
 void MyScene::delEdge(MyEdge *e) {
@@ -58,6 +81,7 @@ void MyScene::delEdge(MyEdge *e) {
     edges.erase(e);
     e->startNode->outEdge.erase(e);
     e->endNode->inEdge.erase(e);
+    updateStatusBar();
     delete e;
 }
 void MyScene::delNode(MyNode *n) {
@@ -69,6 +93,7 @@ void MyScene::delNode(MyNode *n) {
     for (auto e: n->inEdge) es.push_back(e);
     n->inEdge.clear(), n->outEdge.clear();
     for (auto e: es) delEdge(e);
+    updateStatusBar();
     delete n;
 }
 void MyScene::delItem(QGraphicsItem *x) {
@@ -117,9 +142,38 @@ void MyScene::switchMode(CursorMode mode) {
     for (auto e: edges) e->updateMode();
 }
 
+int MyScene::isForest() {
+    QHash <MyNode*, bool> vis;
+    QHash <MyEdge*, bool> visE;
+    int ecnt = 0, ncnt = 0, ans = 0;
+    for (auto n: nodes) vis[n] = 0;
+    for (auto e: edges) visE[e] = 0;
+    std::function<void(MyNode*)> dfs = [&](MyNode* x) {
+        vis[x] = 1; ++ncnt;
+        for (auto e: x->inEdge) {
+            if (!visE[e]) visE[e] = 1, ++ecnt;
+            visE[e] = 1;
+            if (!vis[e->ad(x)]) dfs(e->ad(x));
+        }
+        for (auto e: x->outEdge) {
+            if (!visE[e]) visE[e] = 1, ++ecnt;
+            visE[e] = 1;
+            if (!vis[e->ad(x)]) dfs(e->ad(x));
+        }
+    };
+    for (auto n: nodes) if (!vis[n]) {
+        int _e = ecnt, _n = ncnt;
+        dfs(n);
+        if (ecnt - _e == ncnt - _n - 1) ++ans;
+        else return 0;
+    }
+    return ans;
+}
+
 void MyScene::toggleDirect() {
     directed ^= 1;
     for (auto e: edges) e->update();
+    updateStatusBar();
 }
 
 void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {

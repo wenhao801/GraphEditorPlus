@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->addSeparator();
     ui->toolBar->addWidget(ui->toggleDirect);
 
-    scene = new MyScene(this, ui->graphicsView);
+    scene = new MyScene(this, ui->graphicsView, ui->nodeCount, ui->edgeCount, ui->spStatus);
 
     connect(ui->modesGroup, &QButtonGroup::buttonClicked, this, &MainWindow::switchMode);
     connect(ui->toggleDirect, &QToolButton::clicked, scene, &MyScene::toggleDirect);
@@ -28,9 +28,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setMouseTracking(1);
+    ui->graphicsView->viewport()->setMouseTracking(1);
+
 
     scene->setBackgroundBrush(Qt::white);
 
+    statusBar()->addPermanentWidget(ui->nodeCount, 1);
+    statusBar()->addPermanentWidget(ui->edgeCount, 1);
+    statusBar()->addPermanentWidget(ui->spStatus, 1);
 }
 
 MainWindow::~MainWindow()
