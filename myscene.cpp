@@ -227,11 +227,9 @@ void MyScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
 }
 
 void MyScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
-    if(!dragged){
-        return;
-    }
+
     // qDebug() << "dragging " << Qt::endl;
-    increseBoundray();
+    if (dragged) increseBoundray();
     QGraphicsScene::mouseMoveEvent(event);
 }
 

@@ -7,12 +7,13 @@ MyEdge::MyEdge(MyScene *_scene, MyNode *s, MyNode *e, QString _weight, QGraphics
     QGraphicsLineItem(parent), startNode(s), endNode(e), scene(_scene) {
     weight = new QGraphicsSimpleTextItem(_weight, this);
     updateMode();
+    setAcceptHoverEvents(1);
 }
 
 void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     QStyleOptionGraphicsItem *op = (QStyleOptionGraphicsItem *)option;
     auto color = QColor(0, 0, 0);
-    if (option->state & QStyle::State_Selected) {
+    if (option->state & (QStyle::State_Selected | QStyle::State_MouseOver)) {
         color = QColor(57, 197, 187);
     }
     setPen(QPen(QBrush(color, Qt::SolidPattern), penSize, Qt::SolidLine));
