@@ -8,6 +8,8 @@
 #include "mynode.h"
 #include "myedge.h"
 
+class MainWindow;
+
 class MyScene : public QGraphicsScene
 {
     Q_OBJECT
@@ -40,12 +42,14 @@ private:
     bool dragged;
     QGraphicsView *qgView;
     void increseBoundray();
-    int boundrayWidth;
-    int extendAmount;
+    const int boundrayWidth = 10;
+    const int extendAmount = 1000;
     QPointF lastClickedPoint;
 
     qreal standard_z = 1e-5;
     int defaultNodeID = 0;
+
+    friend class MainWindow;
 };
 
 #endif // MYSCENE_H

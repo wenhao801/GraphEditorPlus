@@ -10,8 +10,6 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q)
     setSceneRect(-500, -500, 1000, 1000);
 
     dragged = 0;
-    boundrayWidth = 10;
-    extendAmount = 1000;
 
 
     std::vector <MyNode*> tmp;
