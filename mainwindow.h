@@ -6,6 +6,7 @@
 
 #include "myscene.h"
 
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -30,8 +31,12 @@ private slots:
 
     void on_actionFrom_Text_triggered();
 
+    void on_actionNew_triggered();
+    void on_actionSave_triggered();
+    void on_actionOpen_triggered();
+    void on_actionSaveAs_triggered();
+
 private:
     Ui::MainWindow *ui;
-
 };
 #endif // MAINWINDOW_H

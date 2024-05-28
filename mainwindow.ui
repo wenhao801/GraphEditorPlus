@@ -160,7 +160,7 @@
      <x>0</x>
      <y>0</y>
      <width>1064</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -170,6 +170,7 @@
     <addaction name="actionNew"/>
     <addaction name="actionSave"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionSaveAs"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -225,6 +226,11 @@
   <action name="actionFrom_Text">
    <property name="text">
     <string>From Text</string>
+   </property>
+  </action>
+  <action name="actionSaveAs">
+   <property name="text">
+    <string>Save As</string>
    </property>
   </action>
  </widget>
