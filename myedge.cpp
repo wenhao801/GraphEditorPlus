@@ -19,10 +19,10 @@ void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     setPen(QPen(QBrush(color, Qt::SolidPattern), penSize, Qt::SolidLine));
     op->state &= ~QStyle::State_Selected;
 
-    QLineF l(startNode->sceneBoundingRect().center(), endNode->sceneBoundingRect().center());
+    QLineF l(startNode->sceneBoundingRect().center(), endNode->name ? endNode->sceneBoundingRect().center() : endNode->scenePos());
 
     QPointF p1 = l.p1() + QLineF::fromPolar(startNode->radius + startNode->penSize - 4, l.angle()).p2();
-    QPointF p2 = l.p2() - QLineF::fromPolar(endNode->radius + endNode->penSize - 4, l.angle()).p2();
+    QPointF p2 = l.p2(); if (endNode->name) p2 -= QLineF::fromPolar(endNode->radius + endNode->penSize - 4, l.angle()).p2();
     setLine(QLineF(p1, p2));
 
     weight->setPos(boundingRect().center() - weight->boundingRect().center());
@@ -51,7 +51,8 @@ void MyEdge::updateMode() {
         setFlag(QGraphicsItem::ItemIsSelectable, 1);
     }
     if (scene->curMode == MyScene::AddMode) {
-
+        setFlag(QGraphicsItem::ItemIsMovable, 0);
+        setFlag(QGraphicsItem::ItemIsSelectable, 0);
     }
     if (scene->curMode == MyScene::DeleteMode) {
         setFlag(QGraphicsItem::ItemIsMovable, 0);

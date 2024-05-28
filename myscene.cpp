@@ -11,9 +11,6 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q, QLabel *_node, QLabel *_edge
     setSceneRect(-500, -500, 1000, 1000);
 
     dragged = 0;
-    boundrayWidth = 10;
-    extendAmount = 1000;
-
 
 
     std::vector <MyNode*> tmp;
@@ -109,14 +106,42 @@ void MyScene::delItem(QGraphicsItem *x) {
     }
 }
 
+QPointF MyScene::randomNode() {
+    QRect r = qgView->viewport()->rect();
+    QPointF topLeft = qgView->mapToScene(r.topLeft()), bottomRight = qgView->mapToScene(r.bottomRight());
+    QRectF R(topLeft, bottomRight - topLeft);
+    auto maxDis = [&](QPointF p) {
+        qreal res = 1e9;
+        for (auto n: nodes) {
+            if (R.contains(n->scenePos()))
+                res = std::min(res, QLineF(p, n->scenePos()).length());
+        }
+        return res;
+    };
+
+    QPointF res(QRandomGenerator::global()->bounded(bottomRight.x() - topLeft.x()) + topLeft.x(),
+                QRandomGenerator::global()->bounded(bottomRight.y() - topLeft.y()) + topLeft.y());
+    qreal score = maxDis(res);
+    for (int _ = 1; _ <= 20; _++) {
+        QPointF now(QRandomGenerator::global()->bounded(bottomRight.x() - topLeft.x()) + topLeft.x(),
+                    QRandomGenerator::global()->bounded(bottomRight.y() - topLeft.y()) + topLeft.y());
+        qreal _score = maxDis(now);
+        if (_score > score) score = _score, res = now;
+    }
+    return res;
+}
+
 void MyScene::insertFromText(QString text) {
+    randomNode();
     QStringList lines = text.split('\n', Qt::SkipEmptyParts);
     for (auto line: lines) {
         QStringList words = line.split(' ', Qt::SkipEmptyParts);
         if (words.size() <= 3) {
-            addNode(QRandomGenerator::global()->bounded(-200, 200), QRandomGenerator::global()->bounded(-200, 200), words[0]);
+            QPointF rndNode = randomNode();
+            addNode(rndNode.x(), rndNode.y(), words[0]);
             if (words.size() >= 2) {
-                addNode(QRandomGenerator::global()->bounded(-200, 200), QRandomGenerator::global()->bounded(-200, 200), words[1]);
+                rndNode = randomNode();
+                addNode(rndNode.x(), rndNode.y(), words[1]);
                 addEdge(ids[words[0]], ids[words[1]], words.size() == 3 ? words[2] : nullptr);
             }
         }
@@ -204,7 +229,20 @@ void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     if (curMode == DeleteMode) {
         if (want) delItem(want);
     }
-
+    if (curMode == AddMode) {
+        if (want && want->type() == MyNode::Type) {
+            DragNode =  qgraphicsitem_cast<MyNode*>(want);
+            ADDedge = true;
+            HiddenNode = new MyNode(this, nullptr);
+            HiddenNode->setPos(clicked_point);
+            myline = new MyEdge(this,DragNode,HiddenNode,nullptr);
+            addItem(HiddenNode), addItem(myline);
+            HiddenNode->setVisible(false);
+        }
+        else {
+            addNode(clicked_point.x(), clicked_point.y());
+        }
+    }
     dragged = 1;
     lastClickedPoint = event->scenePos();
     // qDebug() << "dragged " << lastClickedPoint << Qt::endl;
@@ -223,13 +261,40 @@ void MyScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
         for (auto x: selected) delItem(x);
 
     }
+    if (curMode == AddMode && ADDedge) {
+        QPointF released_point = event->scenePos();
+        QGraphicsItem * want = nullptr;
+        QList <QGraphicsItem*>  released_items = items(released_point);
+        for (auto it: released_items)
+            if (it->type() == MyNode::Type && it != HiddenNode) {
+                want = it;
+                break;
+            }
+        qDebug() << "!" << want << Qt::endl;
+        if (want) {
+            EndNode = qgraphicsitem_cast<MyNode*>(want);
+            if (EndNode != DragNode) {
+                addEdge(DragNode, EndNode);
+            }
+        }
+        ADDedge = false;
+        delete HiddenNode;
+        delete myline;
+        HiddenNode = nullptr, myline = nullptr;
+    }
     QGraphicsScene::mouseReleaseEvent(event);
 }
 
 void MyScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
-
+    if(dragged){
+        increseBoundray();
+    }
     // qDebug() << "dragging " << Qt::endl;
-    if (dragged) increseBoundray();
+    if (curMode == AddMode && ADDedge) {
+        QPointF CurPos = event->scenePos();
+        HiddenNode->setPos(CurPos);
+        myline->update();
+    }
     QGraphicsScene::mouseMoveEvent(event);
 }
 

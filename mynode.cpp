@@ -7,9 +7,11 @@ MyNode::MyNode(MyScene *_scene, QString _name, QGraphicsItem *parent): QGraphics
     // Make sure that 2 * radius == what in the constructor above ||.
     setBrush(Qt::white);
 
-    name = new QGraphicsSimpleTextItem(_name, this);
-    name->setFont(QFont("Microsoft Yahei", -1, QFont::Bold));
-    name->setPos(boundingRect().center() - name->boundingRect().center());
+    if (!_name.isNull()) {
+        name = new QGraphicsSimpleTextItem(_name, this);
+        name->setFont(QFont("Microsoft Yahei", -1, QFont::Bold));
+        name->setPos(boundingRect().center() - name->boundingRect().center());
+    }
     updateMode();
     setAcceptHoverEvents(1);
 }
@@ -37,7 +39,8 @@ void MyNode::updateMode() {
         setFlag(QGraphicsItem::ItemIsSelectable, 1);
     }
     if (scene->curMode == MyScene::AddMode) {
-
+        setFlag(QGraphicsItem::ItemIsMovable, 0);
+        setFlag(QGraphicsItem::ItemIsSelectable, 0);
     }
     if (scene->curMode == MyScene::DeleteMode) {
         setFlag(QGraphicsItem::ItemIsMovable, 0);

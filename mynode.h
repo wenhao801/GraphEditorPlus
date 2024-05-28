@@ -27,7 +27,7 @@ public:
     void updateMode();
 
     MyScene *scene;
-    QGraphicsSimpleTextItem *name;
+    QGraphicsSimpleTextItem *name = nullptr;
 
     const int penSize = 5, radius = 25;
 

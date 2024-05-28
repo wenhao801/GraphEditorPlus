@@ -3,11 +3,14 @@
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QGraphicsLineItem>
 #include <QGraphicsItem>
 #include <QLabel>
 
 #include "mynode.h"
 #include "myedge.h"
+
+class MainWindow;
 
 class MyScene : public QGraphicsScene
 {
@@ -32,6 +35,11 @@ public:
     void switchMode(CursorMode mode);
     bool directed = 1;
     void toggleDirect();
+    MyNode * DragNode = nullptr;
+    MyNode * EndNode = nullptr;
+    bool ADDedge=false;
+    MyEdge * myline = nullptr;
+    MyNode * HiddenNode = nullptr;
 
     void updateStatusBar();
 
@@ -45,14 +53,17 @@ private:
     bool dragged;
     QGraphicsView *qgView;
     void increseBoundray();
-    int boundrayWidth;
-    int extendAmount;
+    const int boundrayWidth = 10;
+    const int extendAmount = 1000;
     QPointF lastClickedPoint;
 
     qreal standard_z = 1e-5;
     int defaultNodeID = 0;
 
     QLabel *nodeCount, *edgeCount, *spStatus;
+    friend class MainWindow;
+
+    QPointF randomNode();
 };
 
 #endif // MYSCENE_H
