@@ -43,7 +43,8 @@ void MyEdge::updateMode() {
         setFlag(QGraphicsItem::ItemIsSelectable, 1);
     }
     if (scene->curMode == MyScene::AddMode) {
-
+        setFlag(QGraphicsItem::ItemIsMovable, 0);
+        setFlag(QGraphicsItem::ItemIsSelectable, 0);
     }
     if (scene->curMode == MyScene::DeleteMode) {
         setFlag(QGraphicsItem::ItemIsMovable, 0);

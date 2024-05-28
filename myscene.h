@@ -3,6 +3,7 @@
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
+#include <QGraphicsLineItem>
 #include <QGraphicsItem>
 
 #include "mynode.h"
@@ -31,6 +32,11 @@ public:
     void switchMode(CursorMode mode);
     bool directed = 1;
     void toggleDirect();
+    MyNode * DragNode = nullptr;
+    MyNode * EndNode = nullptr;
+    bool ADDedge=false;
+    MyEdge * myline = nullptr;
+    MyNode * HiddenNode = nullptr;
 
 private:
     QMap <QString, MyNode*> ids;
