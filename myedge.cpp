@@ -6,6 +6,7 @@
 MyEdge::MyEdge(MyScene *_scene, MyNode *s, MyNode *e, QString _weight, QGraphicsItem *parent):
     QGraphicsLineItem(parent), startNode(s), endNode(e), scene(_scene) {
     weight = new QGraphicsSimpleTextItem(_weight, this);
+    weight->setFont(QFont("Microsoft Yahei Mono", 14));
     updateMode();
     setAcceptHoverEvents(1);
 }
@@ -25,7 +26,7 @@ void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     QPointF p2 = l.p2(); if (endNode->name) p2 -= QLineF::fromPolar(endNode->radius + endNode->penSize - 4, l.angle()).p2();
     setLine(QLineF(p1, p2));
 
-    weight->setPos(boundingRect().center() - weight->boundingRect().center());
+    weight->setPos(boundingRect().center() - weight->boundingRect().center() + QLineF::fromPolar(15, QLineF(p1, p2).angle() - 90).p2());
     painter->setRenderHint(QPainter::Antialiasing);
     QGraphicsLineItem::paint(painter, op, widget);
 

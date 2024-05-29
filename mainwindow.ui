@@ -131,6 +131,10 @@
       <property name="text">
        <string/>
       </property>
+      <property name="icon">
+       <iconset resource="GraphEditorMinus.qrc">
+        <normaloff>:/pictures/direction.png</normaloff>:/pictures/direction.png</iconset>
+      </property>
       <property name="iconSize">
        <size>
         <width>32</width>

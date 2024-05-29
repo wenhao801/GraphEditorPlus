@@ -2,6 +2,7 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include<QListWidget>
+#include "mainwindow.h"
 
 #include <QRandomGenerator>
 
@@ -9,6 +10,7 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q, QLabel *_node, QLabel *_edge
     : QGraphicsScene(parent), qgView(q), nodeCount(_node), edgeCount(_edge), spStatus(sp)
 {
     setSceneRect(-500, -500, 1000, 1000);
+    window = (MainWindow*) parent;
 
     dragged = 0;
 
@@ -84,7 +86,7 @@ void MyScene::delEdge(MyEdge *e) {
 void MyScene::delNode(MyNode *n) {
     removeItem(n);
     nodes.erase(n);
-    ids.erase(ids.find(n->name->text()));
+    ids.remove(n->name->text());
     std::vector <MyEdge*> es;
     for (auto e: n->outEdge) es.push_back(e);
     for (auto e: n->inEdge) es.push_back(e);
@@ -240,7 +242,7 @@ void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
             HiddenNode->setVisible(false);
         }
         else {
-            addNode(clicked_point.x(), clicked_point.y());
+            addNode(clicked_point.x() - 25, clicked_point.y() - 25);
         }
     }
     dragged = 1;
@@ -296,6 +298,61 @@ void MyScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
         myline->update();
     }
     QGraphicsScene::mouseMoveEvent(event);
+}
+
+void MyScene::nameNode(MyNode *n, QString name) {
+    ids.remove(n->name->text());
+    n->name->setText(name);
+    ids[name] = n;
+}
+void MyScene::nameEdge(MyEdge *e, QString weight) {
+    e->weight->setText(weight);
+}
+
+void MyScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+    QPointF clicked_point = event->scenePos();
+    QGraphicsItem * want = nullptr;
+    QList <QGraphicsItem*> clicked_items = items(clicked_point);
+    for (auto it: clicked_items)
+        if (it->type() == MyNode::Type || it->type() == MyEdge::Type) {
+            want = it;
+            break;
+        }
+    if (want && (curMode == MoveMode || curMode == SelectMode)) {
+        bool ok = 0;
+        QString text;
+        if (want->type() == MyNode::Type) {
+            auto it = qgraphicsitem_cast<MyNode*>(want);
+            text = QInputDialog::getText(window, "Change name",
+                                         "Changing node's name from " + it->name->text() + " to...", QLineEdit::Normal, QString(), &ok);
+            if (ok) {
+                if (!ids.count(text)) nameNode(it, text);
+                else {
+                    QMessageBox::warning(window, "Name clashes", "The new name " + text + " has been occupied by another node.");
+                }
+            }
+        }
+        if (want->type() == MyEdge::Type) {
+            auto it = qgraphicsitem_cast<MyEdge*>(want);
+            text = QInputDialog::getText(window, "Change weight",
+                                         "Changing edge's weight from " + it->weight->text() + " to...", QLineEdit::Normal, QString(), &ok);
+            if (ok) nameEdge(it, text);
+        }
+        qDebug() << ok << ' ' << text << Qt::endl;
+
+    }
+    QGraphicsScene::mouseDoubleClickEvent(event);
+}
+
+void MyScene::keyPressEvent(QKeyEvent *event) {
+    if (curMode == SelectMode) {
+        if (event->key() == Qt::Key_Delete) {
+            QList <QGraphicsItem*> selected = selectedItems();
+            std::sort(selected.begin(), selected.end(), [&](QGraphicsItem* u, QGraphicsItem *v) { return u->type() > v->type(); });
+            for (auto x: selected) delItem(x);
+        }
+    }
+    QGraphicsScene::keyPressEvent(event);
 }
 
 void MyScene::increseBoundray(){

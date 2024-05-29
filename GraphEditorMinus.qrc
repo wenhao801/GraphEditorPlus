@@ -7,5 +7,6 @@
         <file>pictures/save.png</file>
         <file>pictures/appIcon.png</file>
         <file>pictures/APP_ICON.ico</file>
+        <file>pictures/direction.png</file>
     </qresource>
 </RCC>

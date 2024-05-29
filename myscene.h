@@ -6,6 +6,9 @@
 #include <QGraphicsLineItem>
 #include <QGraphicsItem>
 #include <QLabel>
+#include <QKeyEvent>
+#include <QInputDialog>
+#include <QMessageBox>
 
 #include "mynode.h"
 #include "myedge.h"
@@ -20,6 +23,8 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void keyPressEvent(QKeyEvent *keyEvent) override;
 public:
     explicit MyScene(QObject *parent = nullptr, QGraphicsView *q = nullptr, QLabel *_node = nullptr, QLabel *_edge = nullptr, QLabel *_sp = nullptr);
 
@@ -27,6 +32,8 @@ public:
     MyEdge* addEdge(MyNode *u, MyNode *v, QString _weight = nullptr);
     void delEdge(MyEdge *);
     void delNode(MyNode *);
+    void nameNode(MyNode *, QString);
+    void nameEdge(MyEdge *, QString);
     void delItem(QGraphicsItem *);
 
     void insertFromText(QString);
@@ -62,6 +69,7 @@ private:
 
     QLabel *nodeCount, *edgeCount, *spStatus;
     friend class MainWindow;
+    MainWindow *window;
 
     QPointF randomNode();
 };

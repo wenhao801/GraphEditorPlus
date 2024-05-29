@@ -10,13 +10,13 @@ MyNode::MyNode(MyScene *_scene, QString _name, QGraphicsItem *parent): QGraphics
     if (!_name.isNull()) {
         name = new QGraphicsSimpleTextItem(_name, this);
         name->setFont(QFont("Microsoft Yahei", -1, QFont::Bold));
-        name->setPos(boundingRect().center() - name->boundingRect().center());
     }
     updateMode();
     setAcceptHoverEvents(1);
 }
 
 void MyNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    name->setPos(boundingRect().center() - name->boundingRect().center());
     QStyleOptionGraphicsItem *op = (QStyleOptionGraphicsItem *)option;
     auto color = QColor(0, 0, 0);
     if (option->state & (QStyle::State_Selected | QStyle::State_MouseOver)) {
