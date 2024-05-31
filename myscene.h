@@ -9,6 +9,7 @@
 #include <QKeyEvent>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QMenu>
 
 #include "mynode.h"
 #include "myedge.h"
@@ -25,6 +26,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     void keyPressEvent(QKeyEvent *keyEvent) override;
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 public:
     explicit MyScene(QObject *parent = nullptr, QGraphicsView *q = nullptr, QLabel *_node = nullptr, QLabel *_edge = nullptr, QLabel *_sp = nullptr);
 
@@ -35,6 +37,7 @@ public:
     void nameNode(MyNode *, QString);
     void nameEdge(MyEdge *, QString);
     void delItem(QGraphicsItem *);
+    void renameItem(QGraphicsItem *);
 
     void insertFromText(QString);
 

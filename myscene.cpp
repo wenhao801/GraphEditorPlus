@@ -22,6 +22,8 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q, QLabel *_node, QLabel *_edge
         tmp.push_back(now);
     }
 
+    connect(this, &MyScene::selectionChanged, this, &MyScene::updateStatusBar);
+
     // MyNode* u = addNode(0, 0);
 
     // MyNode* v = addNode(80, 80);
@@ -35,8 +37,20 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q, QLabel *_node, QLabel *_edge
 }
 
 void MyScene::updateStatusBar() {
-    nodeCount->setText(QString::number(nodes.size()) + " Node" + (nodes.size() >= 2 ? "s" : ""));
-    edgeCount->setText(QString::number(edges.size()) + " Edge" + (edges.size() >= 2 ? "s" : ""));
+    if (curMode == SelectMode) {
+        QList <QGraphicsItem*> selected = selectedItems();
+        int n = 0, e = 0;
+        for (auto it: selected) {
+            if (it->type() == MyNode::Type) ++n;
+            if (it->type() == MyEdge::Type) ++e;
+        }
+        nodeCount->setText((n ? (QString::number(n) + " / ") : "") + QString::number(nodes.size()) + " Node" + (nodes.size() >= 2 ? "s" : ""));
+        edgeCount->setText((e ? (QString::number(e) + " / ") : "") + QString::number(edges.size()) + " Edge" + (edges.size() >= 2 ? "s" : ""));
+    }
+    else {
+        nodeCount->setText(QString::number(nodes.size()) + " Node" + (nodes.size() >= 2 ? "s" : ""));
+        edgeCount->setText(QString::number(edges.size()) + " Edge" + (edges.size() >= 2 ? "s" : ""));
+    }
     if (nodes.empty() && edges.empty())
         spStatus->setText("Empty graph");
     else if (edges.empty())
@@ -153,6 +167,7 @@ void MyScene::insertFromText(QString text) {
 void MyScene::switchMode(CursorMode mode) {
     // enter new mode
     curMode = mode;
+    updateStatusBar();
     if (curMode == MoveMode) {
         qgView->setDragMode(QGraphicsView::ScrollHandDrag);
     }
@@ -205,50 +220,58 @@ void MyScene::toggleDirect() {
 
 void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
-    const int expandSize = 100;
-    setSceneRect(sceneRect().united(itemsBoundingRect().adjusted(-expandSize, -expandSize, expandSize, expandSize)));
+    if (event->button() & Qt::LeftButton) {
 
-    QPointF clicked_point = event->scenePos();
-    qDebug() << clicked_point << ' ';
-    QGraphicsItem * want = nullptr;
-    QList <QGraphicsItem*> clicked_items = items(clicked_point);
-    for (auto it: clicked_items)
-        if (it->type() == MyNode::Type || it->type() == MyEdge::Type) {
-            want = it;
-            break;
-        }
+        const int expandSize = 100;
+        setSceneRect(sceneRect().united(itemsBoundingRect().adjusted(-expandSize, -expandSize, expandSize, expandSize)));
 
-    qDebug() << want << Qt::endl;
-    if (curMode == MoveMode) {
-        if (want) {
-            qDebug() << want->scenePos() << Qt::endl;
-            want->setZValue(standard_z);
-            standard_z += 1e-4;
-            qDebug() << standard_z << Qt::endl;
+        QPointF clicked_point = event->scenePos();
+        qDebug() << clicked_point << ' ';
+        QGraphicsItem * want = nullptr;
+        QList <QGraphicsItem*> clicked_items = items(clicked_point);
+        for (auto it: clicked_items)
+            if (it->type() == MyNode::Type || it->type() == MyEdge::Type) {
+                want = it;
+                break;
+            }
+
+        qDebug() << want << Qt::endl;
+        if (curMode == MoveMode) {
+            if (want) {
+                qDebug() << want->scenePos() << Qt::endl;
+                want->setZValue(standard_z);
+                standard_z += 1e-4;
+                qDebug() << standard_z << Qt::endl;
+            }
+            else qDebug() << "nullptr" << Qt::endl;
         }
-        else qDebug() << "nullptr" << Qt::endl;
-    }
-    if (curMode == DeleteMode) {
-        if (want) delItem(want);
-    }
-    if (curMode == AddMode) {
-        if (want && want->type() == MyNode::Type) {
-            DragNode =  qgraphicsitem_cast<MyNode*>(want);
-            ADDedge = true;
-            HiddenNode = new MyNode(this, nullptr);
-            HiddenNode->setPos(clicked_point);
-            myline = new MyEdge(this,DragNode,HiddenNode,nullptr);
-            addItem(HiddenNode), addItem(myline);
-            HiddenNode->setVisible(false);
+        if (curMode == DeleteMode) {
+            if (want) delItem(want);
         }
-        else {
-            addNode(clicked_point.x() - 25, clicked_point.y() - 25);
+        if (curMode == AddMode) {
+            if (want && want->type() == MyNode::Type) {
+                DragNode =  qgraphicsitem_cast<MyNode*>(want);
+                ADDedge = true;
+                HiddenNode = new MyNode(this, nullptr);
+                HiddenNode->setPos(clicked_point);
+                myline = new MyEdge(this,DragNode,HiddenNode,nullptr);
+                addItem(HiddenNode), addItem(myline);
+                HiddenNode->setVisible(false);
+            }
+            else {
+                addNode(clicked_point.x() - 25, clicked_point.y() - 25);
+            }
         }
+        dragged = 1;
+        lastClickedPoint = event->scenePos();
+        // qDebug() << "dragged " << lastClickedPoint << Qt::endl;
+        increseBoundray();
     }
-    dragged = 1;
-    lastClickedPoint = event->scenePos();
-    // qDebug() << "dragged " << lastClickedPoint << Qt::endl;
-    increseBoundray();
+    if (curMode == SelectMode && event->button() == Qt::RightButton) {
+        // to not clear the current selection when right-clicked
+        event->accept();
+        return;
+    }
 
     QGraphicsScene::mousePressEvent(event);
 }
@@ -309,39 +332,80 @@ void MyScene::nameEdge(MyEdge *e, QString weight) {
     e->weight->setText(weight);
 }
 
+void MyScene::renameItem(QGraphicsItem *want) {
+    bool ok = 0;
+    QString text;
+    if (want->type() == MyNode::Type) {
+        auto it = qgraphicsitem_cast<MyNode*>(want);
+        text = QInputDialog::getText(window, "Change name",
+                                     "Changing node's name from " + it->name->text() + " to...", QLineEdit::Normal, QString(), &ok);
+        if (ok) {
+            if (!ids.count(text)) nameNode(it, text);
+            else {
+                QMessageBox::warning(window, "Name clashes", "The new name " + text + " has been occupied by another node.");
+            }
+        }
+    }
+    if (want->type() == MyEdge::Type) {
+        auto it = qgraphicsitem_cast<MyEdge*>(want);
+        text = QInputDialog::getText(window, "Change weight",
+                                     "Changing edge's weight from " + it->weight->text() + " to...", QLineEdit::Normal, QString(), &ok);
+        if (ok) nameEdge(it, text);
+    }
+    qDebug() << ok << ' ' << text << Qt::endl;
+}
 void MyScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
-    QPointF clicked_point = event->scenePos();
     QGraphicsItem * want = nullptr;
-    QList <QGraphicsItem*> clicked_items = items(clicked_point);
+    QList <QGraphicsItem*> clicked_items = items(event->scenePos());
     for (auto it: clicked_items)
         if (it->type() == MyNode::Type || it->type() == MyEdge::Type) {
             want = it;
             break;
         }
-    if (want && (curMode == MoveMode || curMode == SelectMode)) {
-        bool ok = 0;
-        QString text;
-        if (want->type() == MyNode::Type) {
-            auto it = qgraphicsitem_cast<MyNode*>(want);
-            text = QInputDialog::getText(window, "Change name",
-                                         "Changing node's name from " + it->name->text() + " to...", QLineEdit::Normal, QString(), &ok);
-            if (ok) {
-                if (!ids.count(text)) nameNode(it, text);
-                else {
-                    QMessageBox::warning(window, "Name clashes", "The new name " + text + " has been occupied by another node.");
-                }
+    if (want && (curMode == MoveMode || curMode == SelectMode))
+        renameItem(want);
+    QGraphicsScene::mouseDoubleClickEvent(event);
+}
+
+void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
+    if (curMode != SelectMode) {
+        QGraphicsItem * want = nullptr;
+        QList <QGraphicsItem*> clicked_items = items(event->scenePos());
+        for (auto it: clicked_items)
+            if (it->type() == MyNode::Type || it->type() == MyEdge::Type) {
+                want = it;
+                break;
+            }
+
+        if (want) {
+            QMenu menu;
+            QAction *renameAction = menu.addAction("Rename");
+            QAction *deleteAction = menu.addAction("Delete");
+            QAction *act = menu.exec(event->screenPos());
+            if (act == renameAction) {
+                renameItem(want);
+            }
+            else if (act == deleteAction) {
+                delItem(want);
             }
         }
-        if (want->type() == MyEdge::Type) {
-            auto it = qgraphicsitem_cast<MyEdge*>(want);
-            text = QInputDialog::getText(window, "Change weight",
-                                         "Changing edge's weight from " + it->weight->text() + " to...", QLineEdit::Normal, QString(), &ok);
-            if (ok) nameEdge(it, text);
-        }
-        qDebug() << ok << ' ' << text << Qt::endl;
-
     }
-    QGraphicsScene::mouseDoubleClickEvent(event);
+    if (curMode == SelectMode) {
+        QList <QGraphicsItem*> selected = selectedItems();
+        if (!selected.empty()) {
+            QMenu menu;
+            QAction *deleteAction = menu.addAction("Delete");
+            QAction *deleteEdgeAction = menu.addAction("Delete edges");
+            QAction *act = menu.exec(event->screenPos());
+            if (act == deleteAction) {
+                for (auto x: selected) delItem(x);
+            }
+            if (act == deleteEdgeAction) {
+                for (auto x: selected) if (x->type() == MyEdge::Type) delItem(x);
+            }
+        }
+    }
+    QGraphicsScene::contextMenuEvent(event);
 }
 
 void MyScene::keyPressEvent(QKeyEvent *event) {
