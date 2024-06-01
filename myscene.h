@@ -68,7 +68,7 @@ private:
     QPointF lastClickedPoint;
 
     qreal standard_z = 1e-5;
-    int defaultNodeID = 0;
+    int defaultNodeID = 1;
 
     QLabel *nodeCount, *edgeCount, *spStatus;
     friend class MainWindow;

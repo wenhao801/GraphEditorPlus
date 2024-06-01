@@ -36,6 +36,8 @@ private slots:
     void on_actionOpen_triggered();
     void on_actionSaveAs_triggered();
 
+    void on_actionSet_autoindex_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

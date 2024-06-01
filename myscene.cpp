@@ -68,7 +68,7 @@ void MyScene::updateStatusBar() {
 
 MyNode* MyScene::addNode(qreal x, qreal y, QString name) {
     if (name.isNull()) {
-        while (ids.count(QString::number(++defaultNodeID)));
+        while (ids.count(QString::number(defaultNodeID))) ++defaultNodeID;
         name = QString::number(defaultNodeID);
     }
     if (ids.count(name)) return nullptr;
@@ -124,8 +124,11 @@ void MyScene::delItem(QGraphicsItem *x) {
 
 QPointF MyScene::randomNode() {
     QRect r = qgView->viewport()->rect();
+    qDebug() << r << ' ';
     QPointF topLeft = qgView->mapToScene(r.topLeft()), bottomRight = qgView->mapToScene(r.bottomRight());
-    QRectF R(topLeft, bottomRight - topLeft);
+    QRectF R(topLeft, bottomRight);
+    qDebug() << R << Qt::endl;
+    if (R.width() > 200 && R.height() > 200) topLeft += QPointF(75, 75), bottomRight -= QPointF(75, 75);
     auto maxDis = [&](QPointF p) {
         qreal res = 1e9;
         for (auto n: nodes) {

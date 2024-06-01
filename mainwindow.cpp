@@ -48,6 +48,8 @@ MainWindow::MainWindow(QWidget *parent)
     statusBar()->addPermanentWidget(ui->nodeCount, 1);
     statusBar()->addPermanentWidget(ui->edgeCount, 1);
     statusBar()->addPermanentWidget(ui->spStatus, 1);
+
+    flag_isNew = flag_isOpen = 1;
 }
 
 MainWindow::~MainWindow()
@@ -73,6 +75,7 @@ void MainWindow::on_actionNew_triggered()
     scene->nodes.clear();
     scene->edges.clear();
     scene->ids.clear();
+    scene->defaultNodeID = 1;
     flag_isNew = 1;
     flag_isOpen = 1;
 }
@@ -105,6 +108,7 @@ void MainWindow::on_actionSave_triggered()
             for(auto item: scene->edges){
                 textStream << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text() << endl;
             }
+            textStream << "defaultNodeID" << ' ' << scene->defaultNodeID << endl;
 
         }
         QMessageBox::information(this,"Ssve File","Save File Success",QMessageBox::Ok);
@@ -119,7 +123,7 @@ void MainWindow::on_actionSave_triggered()
             QFile file(Last_FileName);
             if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                QMessageBox::warning(this,"error","Open File Faile");
+                QMessageBox::warning(this,"error","Open File Failed");
                 return;
             }
             else
@@ -135,6 +139,7 @@ void MainWindow::on_actionSave_triggered()
                     qDebug() << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text() << endl;
                     textStream << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text() << endl;
                 }
+                textStream << "defaultNodeID" << ' ' << scene->defaultNodeID << endl;
                 file.close();
             }
         }
@@ -186,6 +191,10 @@ void MainWindow::on_actionOpen_triggered()
                         continue;
                     }
                     else{
+                        if (lineList[0] == "defaultNodeID") {
+                            scene->defaultNodeID = lineList[1].toInt();
+                            continue;
+                        }
                         if(edgeTurn){
 
                             if(lineList.size() == 2){
@@ -246,6 +255,7 @@ void MainWindow::on_actionSaveAs_triggered(){
         for(auto item: scene->edges){
             textStream << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text() << endl;
         }
+        textStream << "defaultNodeID" << ' ' << scene->defaultNodeID << endl;
 
         QMessageBox::warning(this,"tip","Save File Success!");
         Last_FileName = fileName;
@@ -253,3 +263,14 @@ void MainWindow::on_actionSaveAs_triggered(){
         file.close();
     }
 }
+
+void MainWindow::on_actionSet_autoindex_triggered()
+{
+    int mex = 1; while (scene->ids.count(QString::number(mex))) ++mex;
+    bool ok;
+    int res = QInputDialog::getInt(this, "Setting starting point for auto-index",
+                                 "Setting starting point for auto-index to...(default: the smallest available positive number)",
+                                    mex, -2147483647, 2147483647, 1, &ok);
+    if (ok) scene->defaultNodeID = res;
+}
+
