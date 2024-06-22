@@ -202,6 +202,7 @@
     </widget>
     <addaction name="menuInsert"/>
     <addaction name="actionSet_autoindex"/>
+    <addaction name="actionAuto_layout"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -255,6 +256,11 @@
   <action name="actionSet_autoindex">
    <property name="text">
     <string>Set auto-index</string>
+   </property>
+  </action>
+  <action name="actionAuto_layout">
+   <property name="text">
+    <string>Auto layout</string>
    </property>
   </action>
  </widget>

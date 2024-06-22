@@ -38,6 +38,8 @@ private slots:
 
     void on_actionSet_autoindex_triggered();
 
+    void on_actionAuto_layout_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

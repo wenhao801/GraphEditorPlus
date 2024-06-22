@@ -270,7 +270,7 @@ void MyScene::mousePressEvent(QGraphicsSceneMouseEvent *event) {
         // qDebug() << "dragged " << lastClickedPoint << Qt::endl;
         increseBoundray();
     }
-    if (curMode == SelectMode && event->button() == Qt::RightButton) {
+    if (curMode == SelectMode && event->button() == Qt::RightButton && !selectedItems().empty()) {
         // to not clear the current selection when right-clicked
         event->accept();
         return;
@@ -357,6 +357,84 @@ void MyScene::renameItem(QGraphicsItem *want) {
     }
     qDebug() << ok << ' ' << text << Qt::endl;
 }
+
+void MyScene::FRlayout(QList <QGraphicsItem*> items) {
+    const double areaK = 40;
+
+    if (items.empty()) return;
+    QRectF bound;
+    int nodeCnt = 0;
+    for (auto it: items) if (it->type() == MyNode::Type) bound = it->sceneBoundingRect();
+    for (auto it: items) if (it->type() == MyNode::Type) bound = bound.united(it->sceneBoundingRect()), nodeCnt++;
+    if (!nodeCnt) return;
+
+    bound = QRectF(bound.center(), bound.center());
+
+    bound.adjust(-areaK * nodeCnt, -areaK * nodeCnt, areaK * nodeCnt, areaK * nodeCnt);
+    setSceneRect(sceneRect().united(bound));
+    const double area = bound.width() * bound.height();
+    const double k = 1.2 * sqrt(area / nodeCnt);
+    const double Itemp = bound.width() / 2;
+    double temp = Itemp;
+    const int numIt = 100;
+
+    qDebug() << "auto layout: " << nodeCnt << ' ' << bound << ' ' << area << Qt::endl;
+
+    auto f_a = [&](double d) { return 0.2 * d * d / k; }; // attractive force
+    auto f_r = [&](double d) { return 0.2 * k * k / d; }; // repulsive force
+
+    // QGraphicsRectItem *borderRect = new QGraphicsRectItem(bound);
+    // QPen pen(Qt::red);
+    // pen.setWidth(2);
+    // borderRect->setPen(pen);
+    // addItem(borderRect);
+
+    for (auto _p: items) if (_p->type() == MyNode::Type) {
+        QPointF pos(QRandomGenerator::global()->bounded(bound.width()) + bound.left(),
+                    QRandomGenerator::global()->bounded(bound.height()) + bound.top());
+        _p->setPos(pos);
+    }
+    for (int _ = 1; _ <= numIt; _++) {
+        // bool ok; QInputDialog::getInt(window, "Set", "Sett", 1, -2147483647, 2147483647, 1, &ok);
+
+        QHash <MyNode*, QPointF> delta;
+        for (auto _e: items) if (_e->type() == MyEdge::Type) {
+            MyEdge* e = qgraphicsitem_cast<MyEdge*>(_e);
+            QPointF d = e->endNode->scenePos() - e->startNode->scenePos();
+            double len = e->line().length();
+            if (len < 0.1) continue;
+            delta[e->endNode] -= f_a(len) * d / len;
+            delta[e->startNode] += f_a(len) * d / len;
+        }
+
+        for (int i = 0; i < items.size(); i++) if (items[i]->type() == MyNode::Type)
+            for (int j = 0; j < i; j++) if (items[j]->type() == MyNode::Type) {
+                MyNode *u = qgraphicsitem_cast<MyNode*>(items[i]), *v = qgraphicsitem_cast<MyNode*>(items[j]);
+                QPointF d = v->scenePos() - u->scenePos();
+                double len = QLineF(QPointF(), d).length();
+                if (len < 0.1) continue;
+                delta[v] += f_r(len) * d / len;
+                delta[u] -= f_r(len) * d / len;
+            }
+
+        for (auto _p: items) if (_p->type() == MyNode::Type) {
+            MyNode *p = qgraphicsitem_cast<MyNode*>(_p);
+            QPointF d = delta[p];
+            double len = QLineF(QPointF(), d).length();
+            if (len < 0.1) continue;
+            // qDebug() << p->name->text() << ' ' << d << ' ' << len << ' ' << temp << ' ' << p->scenePos() << Qt::endl;
+            len = fmin(len, temp) / len; d.setX(d.x() * len), d.setY(d.y() * len);
+            d += p->scenePos();
+            // qDebug() << bound.left() << ' ' << bound.right() << ' ' << ' ' << bound.top() << ' ' << bound.bottom() << Qt::endl;
+            d.setX(fmin(d.x(), bound.right())); d.setX(fmax(d.x(), bound.left()));
+            d.setY(fmin(d.y(), bound.bottom())); d.setY(fmax(d.y(), bound.top()));
+            p->setPos(d);
+        }
+
+        temp -= Itemp / numIt;
+    }
+}
+
 void MyScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsItem * want = nullptr;
     QList <QGraphicsItem*> clicked_items = items(event->scenePos());
@@ -371,7 +449,7 @@ void MyScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
-    if (curMode != SelectMode) {
+    if (curMode != SelectMode || selectedItems().empty()) {
         QGraphicsItem * want = nullptr;
         QList <QGraphicsItem*> clicked_items = items(event->scenePos());
         for (auto it: clicked_items)
@@ -393,7 +471,7 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
             }
         }
     }
-    if (curMode == SelectMode) {
+    else {
         QList <QGraphicsItem*> selected = selectedItems();
         if (!selected.empty()) {
             QMenu menu;

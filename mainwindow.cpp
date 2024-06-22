@@ -274,3 +274,9 @@ void MainWindow::on_actionSet_autoindex_triggered()
     if (ok) scene->defaultNodeID = res;
 }
 
+
+void MainWindow::on_actionAuto_layout_triggered()
+{
+    scene->FRlayout(scene->items());
+}
+

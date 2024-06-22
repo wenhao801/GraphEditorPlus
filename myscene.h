@@ -53,6 +53,8 @@ public:
 
     void updateStatusBar();
 
+    void FRlayout(QList <QGraphicsItem*>);
+
 private:
     int isForest();
 
