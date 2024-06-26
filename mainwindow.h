@@ -40,6 +40,8 @@ private slots:
 
     void on_actionAuto_layout_triggered();
 
+    void on_actionSelection_editor_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

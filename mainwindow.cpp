@@ -280,3 +280,9 @@ void MainWindow::on_actionAuto_layout_triggered()
     scene->FRlayout(scene->items());
 }
 
+
+void MainWindow::on_actionSelection_editor_triggered()
+{
+    scene->editSelection();
+}
+

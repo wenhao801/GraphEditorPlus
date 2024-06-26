@@ -10,9 +10,11 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QMenu>
+#include <QQueue>
 
 #include "mynode.h"
 #include "myedge.h"
+#include "editwindow.h"
 
 class MainWindow;
 
@@ -55,8 +57,11 @@ public:
 
     void FRlayout(QList <QGraphicsItem*>);
 
+    void editSelection();
+
 private:
     int isForest();
+    bool isDAG();
 
     QMap <QString, MyNode*> ids;
     std::set <MyNode*> nodes;
@@ -69,14 +74,21 @@ private:
     const int extendAmount = 1000;
     QPointF lastClickedPoint;
 
+    EditWindow editWindow;
+
     qreal standard_z = 1e-5;
     int defaultNodeID = 1;
 
     QLabel *nodeCount, *edgeCount, *spStatus;
     friend class MainWindow;
+    friend class EditWindow;
     MainWindow *window;
 
     QPointF randomNode();
+
+    void linkChain(QList <QGraphicsItem*>);
+    void linkTree(QList <QGraphicsItem*>);
+    void linkComplete(QList <QGraphicsItem*>);
 };
 
 #endif // MYSCENE_H

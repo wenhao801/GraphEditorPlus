@@ -45,18 +45,19 @@ void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 void MyEdge::updateMode() {
     if (scene->curMode == MyScene::MoveMode) {
         setFlag(QGraphicsItem::ItemIsMovable, 0);
-        setFlag(QGraphicsItem::ItemIsSelectable, 0);
+        // setFlag(QGraphicsItem::ItemIsSelectable, 0);
     }
     if (scene->curMode == MyScene::SelectMode) {
         setFlag(QGraphicsItem::ItemIsMovable, 0);
-        setFlag(QGraphicsItem::ItemIsSelectable, 1);
+        // setFlag(QGraphicsItem::ItemIsSelectable, 1);
     }
     if (scene->curMode == MyScene::AddMode) {
         setFlag(QGraphicsItem::ItemIsMovable, 0);
-        setFlag(QGraphicsItem::ItemIsSelectable, 0);
+        // setFlag(QGraphicsItem::ItemIsSelectable, 0);
     }
     if (scene->curMode == MyScene::DeleteMode) {
         setFlag(QGraphicsItem::ItemIsMovable, 0);
-        setFlag(QGraphicsItem::ItemIsSelectable, 1);
+        // setFlag(QGraphicsItem::ItemIsSelectable, 1);
     }
+    setFlag(QGraphicsItem::ItemIsSelectable, 1);
 }

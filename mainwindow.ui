@@ -203,6 +203,7 @@
     <addaction name="menuInsert"/>
     <addaction name="actionSet_autoindex"/>
     <addaction name="actionAuto_layout"/>
+    <addaction name="actionSelection_editor"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -261,6 +262,11 @@
   <action name="actionAuto_layout">
    <property name="text">
     <string>Auto layout</string>
+   </property>
+  </action>
+  <action name="actionSelection_editor">
+   <property name="text">
+    <string>Selection editor</string>
    </property>
   </action>
  </widget>

@@ -1,13 +1,13 @@
 #include "myscene.h"
 
 #include <QGraphicsSceneMouseEvent>
-#include<QListWidget>
+#include <QListWidget>
 #include "mainwindow.h"
 
 #include <QRandomGenerator>
 
 MyScene::MyScene(QObject *parent, QGraphicsView *q, QLabel *_node, QLabel *_edge, QLabel *sp)
-    : QGraphicsScene(parent), qgView(q), nodeCount(_node), edgeCount(_edge), spStatus(sp)
+    : QGraphicsScene(parent), qgView(q), nodeCount(_node), edgeCount(_edge), spStatus(sp), editWindow(this)
 {
     setSceneRect(-500, -500, 1000, 1000);
     window = (MainWindow*) parent;
@@ -23,20 +23,13 @@ MyScene::MyScene(QObject *parent, QGraphicsView *q, QLabel *_node, QLabel *_edge
     }
 
     connect(this, &MyScene::selectionChanged, this, &MyScene::updateStatusBar);
-
-    // MyNode* u = addNode(0, 0);
-
-    // MyNode* v = addNode(80, 80);
-
-    // addEdge(u, v);
-
-    // MyNode *w = addNode(-120, 40);
-    // addEdge(u, w);
+    connect(this, &MyScene::selectionChanged, &editWindow, &EditWindow::updateTable);
 
     switchMode(curMode);
 }
 
 void MyScene::updateStatusBar() {
+    editWindow.updateTable();
     if (curMode == SelectMode) {
         QList <QGraphicsItem*> selected = selectedItems();
         int n = 0, e = 0;
@@ -62,7 +55,8 @@ void MyScene::updateStatusBar() {
         else spStatus->setText("Undirected graph");
     }
     else {
-        spStatus->setText("Directed graph");
+        if (isDAG()) spStatus->setText("Directed acyclic graph");
+        else spStatus->setText("Directed graph");
     }
 }
 
@@ -215,6 +209,22 @@ int MyScene::isForest() {
     return ans;
 }
 
+bool MyScene::isDAG() {
+    QHash <MyNode*, int> ind;
+    for (auto e: edges) ++ind[e->endNode];
+    QQueue <MyNode*> q;
+    for (auto p: nodes) if (!ind[p]) q.push_back(p);
+    while (!q.empty()) {
+        MyNode *p = q.front(); q.pop_front();
+        for (auto e: p->outEdge) {
+            MyNode *x = e->ad(p);
+            --ind[x]; if (!ind[x]) q.push_back(x);
+        }
+    }
+    for (auto p: nodes) if (ind[p]) return 0;
+    return 1;
+}
+
 void MyScene::toggleDirect() {
     directed ^= 1;
     for (auto e: edges) e->update();
@@ -356,6 +366,7 @@ void MyScene::renameItem(QGraphicsItem *want) {
         if (ok) nameEdge(it, text);
     }
     qDebug() << ok << ' ' << text << Qt::endl;
+    editWindow.updateTable();
 }
 
 void MyScene::FRlayout(QList <QGraphicsItem*> items) {
@@ -398,13 +409,19 @@ void MyScene::FRlayout(QList <QGraphicsItem*> items) {
         // bool ok; QInputDialog::getInt(window, "Set", "Sett", 1, -2147483647, 2147483647, 1, &ok);
 
         QHash <MyNode*, QPointF> delta;
+        QHash <MyNode*, int> deg;
         for (auto _e: items) if (_e->type() == MyEdge::Type) {
             MyEdge* e = qgraphicsitem_cast<MyEdge*>(_e);
             QPointF d = e->endNode->scenePos() - e->startNode->scenePos();
             double len = e->line().length();
             if (len < 0.1) continue;
+            ++deg[e->startNode], ++deg[e->endNode];
             delta[e->endNode] -= f_a(len) * d / len;
             delta[e->startNode] += f_a(len) * d / len;
+        }
+        for (auto _p: items) if (_p->type() == MyNode::Type) {
+            MyNode *p = qgraphicsitem_cast<MyNode*>(_p);
+            if (deg.count(p)) delta[p] /= sqrt(deg[p]);
         }
 
         for (int i = 0; i < items.size(); i++) if (items[i]->type() == MyNode::Type)
@@ -433,6 +450,7 @@ void MyScene::FRlayout(QList <QGraphicsItem*> items) {
 
         temp -= Itemp / numIt;
     }
+    qgView->update();
 }
 
 void MyScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
@@ -446,6 +464,81 @@ void MyScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
     if (want && (curMode == MoveMode || curMode == SelectMode))
         renameItem(want);
     QGraphicsScene::mouseDoubleClickEvent(event);
+}
+
+template <typename T>
+void shuffleQList (QList <T> &list) {
+    if (list.empty()) return;
+    for (int i = list.size() - 1; i >= 0; i--) {
+        int j = QRandomGenerator::global()->bounded(i + 1);
+        list.swapItemsAt(i, j);
+    }
+}
+
+void MyScene::linkChain(QList <QGraphicsItem*> items) {
+    QHash <MyNode*, bool> have, vis;
+    for (auto x: items)
+        if (x->type() == MyNode::Type)
+            have[qgraphicsitem_cast<MyNode*>(x)] = 1;
+    int now = 0;
+    QList <QList <MyNode*>> list;
+    std::function<void(MyNode*)> dfs = [&](MyNode* x) {
+        vis[x] = now; list[now - 1].push_back(x);
+        for (auto e: x->outEdge) if (have[e->ad(x)] && !vis[e->ad(x)]) dfs(e->ad(x));
+        for (auto e: x->inEdge) if (have[e->ad(x)] && !vis[e->ad(x)]) dfs(e->ad(x));
+    };
+    for (auto x: items)
+        if (x->type() == MyNode::Type) {
+            auto p = qgraphicsitem_cast<MyNode*>(x);
+            if (!vis[p]) ++now, list.push_back({}), dfs(p);
+        }
+    qDebug() << list.size() << "!!" << Qt::endl;
+    shuffleQList(list);
+    for (auto &L: list) shuffleQList(L);
+    for (int i = 1; i < list.size(); i++) {
+        addEdge(list[i - 1][0], list[i][0]);
+    }
+}
+void MyScene::linkTree(QList <QGraphicsItem*> items) {
+    QHash <MyNode*, bool> have, vis;
+    for (auto x: items)
+        if (x->type() == MyNode::Type)
+            have[qgraphicsitem_cast<MyNode*>(x)] = 1;
+    int now = 0;
+    QList <QList <MyNode*>> list;
+    std::function<void(MyNode*)> dfs = [&](MyNode* x) {
+        vis[x] = now; list[now - 1].push_back(x);
+        for (auto e: x->outEdge) if (have[e->ad(x)] && !vis[e->ad(x)]) dfs(e->ad(x));
+        for (auto e: x->inEdge) if (have[e->ad(x)] && !vis[e->ad(x)]) dfs(e->ad(x));
+    };
+    for (auto x: items)
+        if (x->type() == MyNode::Type) {
+            auto p = qgraphicsitem_cast<MyNode*>(x);
+            if (!vis[p]) ++now, list.push_back({}), dfs(p);
+        }
+    qDebug() << list.size() << "!!" << Qt::endl;
+    shuffleQList(list);
+    for (auto &L: list) shuffleQList(L);
+    for (int i = 1; i < list.size(); i++) {
+        addEdge(list[QRandomGenerator::global()->bounded(i)][0], list[i][0]);
+    }
+}
+void MyScene::linkComplete(QList <QGraphicsItem*> items) {
+    QHash <QPair<MyNode*, MyNode*>, bool> vis;
+    QList <MyNode*> ps;
+    for (auto x: items)
+        if (x->type() == MyNode::Type)
+            ps.push_back(qgraphicsitem_cast<MyNode*>(x));
+    for (auto e: edges) vis[{e->startNode, e->endNode}] = 1, vis[{e->endNode, e->startNode}] = 1;
+    for (int i = 0; i < ps.size(); i++)
+        for (int j = 0; j < i; j++) {
+            if (!vis[{ps[i], ps[j]}]) {
+                if (QRandomGenerator::global()->bounded(2))
+                    addEdge(ps[i], ps[j]);
+                else
+                    addEdge(ps[j], ps[i]);
+            }
+        }
 }
 
 void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
@@ -473,17 +566,37 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     }
     else {
         QList <QGraphicsItem*> selected = selectedItems();
-        if (!selected.empty()) {
-            QMenu menu;
-            QAction *deleteAction = menu.addAction("Delete");
-            QAction *deleteEdgeAction = menu.addAction("Delete edges");
-            QAction *act = menu.exec(event->screenPos());
-            if (act == deleteAction) {
-                for (auto x: selected) delItem(x);
-            }
-            if (act == deleteEdgeAction) {
-                for (auto x: selected) if (x->type() == MyEdge::Type) delItem(x);
-            }
+        QMenu menu;
+        QAction *deleteAction = menu.addAction("Delete");
+        QAction *deleteEdgeAction = menu.addAction("Delete edges");
+        QAction *autoLayout = menu.addAction("Auto layout");
+        QAction *selectionEdit = menu.addAction("Selection editor");
+        QMenu *link = menu.addMenu("Randomly link as...");
+        QAction *linkChainAction = link->addAction("Chain");
+        QAction *linkTreeAction = link->addAction("Tree");
+        QAction *linkCompleteAction = link->addAction("Complete Graph");
+
+        QAction *act = menu.exec(event->screenPos());
+        if (act == deleteAction) {
+            for (auto x: selected) delItem(x);
+        }
+        if (act == deleteEdgeAction) {
+            for (auto x: selected) if (x->type() == MyEdge::Type) delItem(x);
+        }
+        if (act == autoLayout) {
+            FRlayout(selected);
+        }
+        if (act == selectionEdit) {
+            editSelection();
+        }
+        if (act == linkChainAction) {
+            linkChain(selected);
+        }
+        if (act == linkTreeAction) {
+            linkTree(selected);
+        }
+        if (act == linkCompleteAction) {
+            linkComplete(selected);
         }
     }
     QGraphicsScene::contextMenuEvent(event);
@@ -524,4 +637,8 @@ void MyScene::increseBoundray(){
     if (needUpdate) {
         setSceneRect(currentSceneRect);
     }
+}
+
+void MyScene::editSelection() {
+    editWindow.show();
 }
