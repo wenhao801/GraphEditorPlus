@@ -38,6 +38,8 @@ public:
     void delNode(MyNode *);
     void nameNode(MyNode *, QString);
     void nameEdge(MyEdge *, QString);
+    void edgeChangeStart(MyEdge *, MyNode *);
+    void edgeChangeEnd(MyEdge *, MyNode *);
     void delItem(QGraphicsItem *);
     void renameItem(QGraphicsItem *);
 
@@ -57,7 +59,7 @@ public:
 
     void FRlayout(QList <QGraphicsItem*>);
 
-    void editSelection();
+    void showEditConsole();
 
 private:
     int isForest();

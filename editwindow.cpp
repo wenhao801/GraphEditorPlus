@@ -5,12 +5,12 @@
 EditWindow::EditWindow(MyScene *scene, QWidget *parent)
     : QWidget{parent}, scene(scene)
 {
-    setWindowTitle("Selection editor");
+    setWindowTitle("Console");
     setGeometry(100, 100, 600, 400);
 
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
 
-    tableWidget = new QTableWidget(this);
+    tableWidget = new ConsoleTable(this);
     tableWidget->setColumnCount(4);
     tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -23,7 +23,8 @@ EditWindow::EditWindow(MyScene *scene, QWidget *parent)
     tableWidget->verticalHeader()->setVisible(false);
     updateTable();
 
-    connect(tableWidget, &QTableWidget::itemClicked, this, &EditWindow::onItemClicked);
+    connect(tableWidget, &QTableWidget::itemClicked, this, &EditWindow::toggleSelection);
+    connect(tableWidget, &QTableWidget::itemChanged, this, &EditWindow::editItem);
     tableWidget->resizeColumnToContents(0);
 
     mainLayout->addWidget(tableWidget);
@@ -37,6 +38,7 @@ void EditWindow::closeEvent(QCloseEvent *event) {
 }
 
 void EditWindow::updateTable() {
+    userEditing = 0;
     items.clear();
     QHash <QGraphicsItem*, bool> vis;
     for (auto x: scene->selectedItems()) vis[x] = 1;
@@ -83,11 +85,42 @@ void EditWindow::updateTable() {
         checkBox->setChecked(vis[items[row]]);
         tableWidget->setCellWidget(row, 0, checkBox);
     }
+    userEditing = 1;
 }
 
-void EditWindow::onItemClicked(QTableWidgetItem *item) {
+void EditWindow::toggleSelection(QTableWidgetItem *item) {
     qDebug() << item << Qt::endl;
     QCheckBox *checkBox = qobject_cast<QCheckBox*>(tableWidget->cellWidget(item->row(), 0));
     items[item->row()]->setSelected(!checkBox->isChecked());
     updateTable();
+}
+
+void EditWindow::editItem(QTableWidgetItem *item) {
+    if (!userEditing) return;
+    auto it = items[item->row()];
+    if (it->type() == MyNode::Type) {
+        if (item->column() == 1) {
+            auto p = qgraphicsitem_cast<MyNode*>(it);
+            scene->nameNode(p, item->text());
+        }
+        else item->setText("");
+    }
+    else {
+        auto e = qgraphicsitem_cast<MyEdge*>(it);
+        if (item->column() == 1) {
+            if (scene->ids.count(item->text()))
+                scene->edgeChangeStart(e, scene->ids[item->text()]);
+            else
+                item->setText(e->startNode->name->text());
+        }
+        if (item->column() == 2) {
+            if (scene->ids.count(item->text()))
+                scene->edgeChangeEnd(e, scene->ids[item->text()]);
+            else
+                item->setText(e->endNode->name->text());
+        }
+        if (item->column() == 3) {
+            scene->nameEdge(e, item->text());
+        }
+    }
 }

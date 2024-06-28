@@ -283,6 +283,6 @@ void MainWindow::on_actionAuto_layout_triggered()
 
 void MainWindow::on_actionSelection_editor_triggered()
 {
-    scene->editSelection();
+    scene->showEditConsole();
 }
 

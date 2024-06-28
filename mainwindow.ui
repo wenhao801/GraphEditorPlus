@@ -266,7 +266,7 @@
   </action>
   <action name="actionSelection_editor">
    <property name="text">
-    <string>Selection editor</string>
+    <string>Console</string>
    </property>
   </action>
  </widget>
