@@ -26,7 +26,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QGraphicsView" name="graphicsView"/>
+     <widget class="MyView" name="graphicsView"/>
     </item>
     <item>
      <widget class="QToolButton" name="moveMode">
@@ -270,6 +270,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MyView</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">myview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="GraphEditorMinus.qrc"/>
  </resources>

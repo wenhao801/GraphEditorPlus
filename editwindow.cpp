@@ -5,7 +5,7 @@
 EditWindow::EditWindow(MyScene *scene, QWidget *parent)
     : QWidget{parent}, scene(scene)
 {
-    setWindowTitle("Console");
+    setWindowTitle("Console (Right-click to edit)");
     setGeometry(100, 100, 600, 400);
 
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
