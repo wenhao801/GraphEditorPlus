@@ -647,6 +647,7 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     QAction *linkCompleteAction = link ? link->addAction("Complete Graph") : nullptr;
     QMenu *run = !selected.empty() ? menu.addMenu("Run...") : nullptr;
     QAction *runSP = run ? run->addAction("Shortest path") : nullptr;
+    QAction *runMST = run ? run->addAction("Minimum Spanning Tree") : nullptr;
     QAction *changeColor = (want || !selected.empty()) ? menu.addAction("Change color") : nullptr;
 
     if (!menu.isEmpty()) {
@@ -681,6 +682,9 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
             }
             if (act == runSP) {
                 shortestPath(selected);
+            }
+            if (act == runMST) {
+                MST(selected);
             }
             if (act == changeColor) {
                 QColor Color = QColorDialog::getColor(Qt::white, window, "Select Color");
