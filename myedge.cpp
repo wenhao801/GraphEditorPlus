@@ -13,11 +13,11 @@ MyEdge::MyEdge(MyScene *_scene, MyNode *s, MyNode *e, QString _weight, QGraphics
 
 void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     QStyleOptionGraphicsItem *op = (QStyleOptionGraphicsItem *)option;
-    auto color = QColor(0, 0, 0);
+    auto Color = color;
     if (option->state & (QStyle::State_Selected | QStyle::State_MouseOver)) {
-        color = QColor(57, 197, 187);
+        Color = QColor(57, 197, 187);
     }
-    setPen(QPen(QBrush(color, Qt::SolidPattern), penSize, Qt::SolidLine));
+    setPen(QPen(QBrush(Color, Qt::SolidPattern), penSize, Qt::SolidLine));
     op->state &= ~QStyle::State_Selected;
 
     QLineF l(startNode->sceneBoundingRect().center(), endNode->name ? endNode->sceneBoundingRect().center() : endNode->scenePos());
@@ -37,7 +37,7 @@ void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
         QLineF rightl = l.fromPolar(15, l.angle() - 160);
         path.lineTo(p2 + leftl.p2()); path.lineTo(p2 + rightl.p2()); path.lineTo(p2);
 
-        painter->setBrush(QBrush(color, Qt::SolidPattern));
+        painter->setBrush(QBrush(Color, Qt::SolidPattern));
         painter->drawPath(path);
     }
 }

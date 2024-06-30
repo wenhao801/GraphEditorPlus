@@ -22,7 +22,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void subClicked();
     void switchMode();
 
     MyScene *scene;

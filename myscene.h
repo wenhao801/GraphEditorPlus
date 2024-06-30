@@ -97,6 +97,7 @@ private:
     void shortestPath(QList <QGraphicsItem*>);
     void closeSPWindow();
     void MST(QList <QGraphicsItem*> items);
+    void ChangeColor(QList <QGraphicsItem*>, QColor Color);
 };
 
 #endif // MYSCENE_H

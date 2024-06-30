@@ -102,11 +102,13 @@ void MainWindow::on_actionSave_triggered()
 
             textStream << "Nodes" << endl;
             for(auto item: scene->nodes){
-                textStream << item->pos().x() << ' ' << item->pos().y() << ' ' << item->name->text() << endl;
+                textStream << item->pos().x() << ' ' << item->pos().y() << ' ' << item->name->text()
+                           << ' ' << item->color.red() << ' ' << item->color.green() << ' ' << item->color.blue() << ' ' << endl;
             }
             textStream << "Edges" << endl;
             for(auto item: scene->edges){
-                textStream << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text() << endl;
+                textStream << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text()
+                           << ' ' << item->color.red() << ' ' << item->color.green() << ' ' << item->color.blue() << ' ' << endl;
             }
             textStream << "defaultNodeID" << ' ' << scene->defaultNodeID << endl;
 
@@ -132,12 +134,14 @@ void MainWindow::on_actionSave_triggered()
                 textStream << "Nodes" << endl;
                 for(auto item: scene->nodes){
                     qDebug() << item->pos().x() << ' ' << item->pos().y() << ' ' << item->name->text() << endl;
-                    textStream << item->pos().x() << ' ' << item->pos().y() << ' ' << item->name->text() << endl;
+                    textStream << item->pos().x() << ' ' << item->pos().y() << ' ' << item->name->text()
+                               << ' ' << item->color.red() << ' ' << item->color.green() << ' ' << item->color.blue() << ' ' << endl;
                 }
                 textStream << "Edges" << endl;
                 for(auto item: scene->edges){
                     qDebug() << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text() << endl;
-                    textStream << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text() << endl;
+                    textStream << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text()
+                               << ' ' << item->color.red() << ' ' << item->color.green() << ' ' << item->color.blue() << ' ' << endl;
                 }
                 textStream << "defaultNodeID" << ' ' << scene->defaultNodeID << endl;
                 file.close();
@@ -185,7 +189,8 @@ void MainWindow::on_actionOpen_triggered()
 
                 bool edgeTurn = 0;
                 for(auto line: readList){
-                    QStringList lineList = line.split(' ');
+                    QStringList lineList = line.split(' ', Qt::SkipEmptyParts);
+                    qDebug() << lineList << Qt::endl;
                     if(lineList.size() == 1){
                         if(lineList[0] == "Edges") edgeTurn = 1;
                         continue;
@@ -197,11 +202,13 @@ void MainWindow::on_actionOpen_triggered()
                         }
                         if(edgeTurn){
 
-                            if(lineList.size() == 2){
-                                scene->addEdge(scene->ids[lineList[0]], scene->ids[lineList[1]]);
+                            if(lineList.size() == 5){
+                                scene->addEdge(scene->ids[lineList[0]], scene->ids[lineList[1]])
+                                    ->color = QColor(lineList[2].toInt(), lineList[3].toInt(), lineList[4].toInt());
                             }
-                            else if(lineList.size() == 3){
-                                scene->addEdge(scene->ids[lineList[0]], scene->ids[lineList[1]], lineList[2]);
+                            else if(lineList.size() == 6){
+                                scene->addEdge(scene->ids[lineList[0]], scene->ids[lineList[1]], lineList[2])
+                                    ->color = QColor(lineList[3].toInt(), lineList[4].toInt(), lineList[5].toInt());
                             }
 
                             else{
@@ -211,8 +218,9 @@ void MainWindow::on_actionOpen_triggered()
                         }
                         else{
 
-                            if(lineList.size() == 3){
-                                scene->addNode(lineList[0].toDouble(), lineList[1].toDouble(), lineList[2]);
+                            if(lineList.size() == 6){
+                                scene->addNode(lineList[0].toDouble(), lineList[1].toDouble(), lineList[2])
+                                    ->color = QColor(lineList[3].toInt(), lineList[4].toInt(), lineList[5].toInt());
                             }
 
                             else{
@@ -224,6 +232,7 @@ void MainWindow::on_actionOpen_triggered()
                 }
                 file.close();
                 flag_isOpen = 1;
+                flag_isNew = 0;
                 Last_FileName = fileName;
             }
         }
@@ -249,11 +258,13 @@ void MainWindow::on_actionSaveAs_triggered(){
 
         textStream << "Nodes" << endl;
         for(auto item: scene->nodes){
-            textStream << item->pos().x() << ' ' << item->pos().y() << ' ' << item->name->text() << endl;
+            textStream << item->pos().x() << ' ' << item->pos().y() << ' ' << item->name->text()
+                       << ' ' << item->color.red() << ' ' << item->color.green() << ' ' << item->color.blue() << ' ' << endl;
         }
         textStream << "Edges" << endl;
         for(auto item: scene->edges){
-            textStream << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text() << endl;
+            textStream << item->startNode->name->text() << ' ' << item->endNode->name->text() << ' ' << item->weight->text()
+                       << ' ' << item->color.red() << ' ' << item->color.green() << ' ' << item->color.blue() << ' ' << endl;
         }
         textStream << "defaultNodeID" << ' ' << scene->defaultNodeID << endl;
 

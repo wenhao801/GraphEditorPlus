@@ -2,6 +2,8 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QListWidget>
+#include <QColorDialog>
+#include <QPalette>
 #include "mainwindow.h"
 
 #include <QRandomGenerator>
@@ -609,6 +611,20 @@ void MyScene::MST(QList <QGraphicsItem*> items) {
     }
     QMessageBox::information(window, "Result", "Minimum total weight: " + QString::number(ans));
 }
+void MyScene::ChangeColor(QList <QGraphicsItem*> items, QColor Color) {
+    for (auto x: items){
+        if (x->type() == MyNode::Type){
+            MyNode *X = static_cast<MyNode*> (x);
+            X -> color = Color;
+            X -> update();
+        }
+        else {
+            MyEdge *X = static_cast<MyEdge*> (x);
+            X -> color = Color;
+            X -> update();
+        }
+    }
+}
 
 void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     QGraphicsItem * want = nullptr;
@@ -631,6 +647,7 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     QAction *linkCompleteAction = link ? link->addAction("Complete Graph") : nullptr;
     QMenu *run = !selected.empty() ? menu.addMenu("Run...") : nullptr;
     QAction *runSP = run ? run->addAction("Shortest path") : nullptr;
+    QAction *changeColor = (want || !selected.empty()) ? menu.addAction("Change color") : nullptr;
 
     if (!menu.isEmpty()) {
         QAction *act = menu.exec(event->screenPos());
@@ -665,9 +682,15 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
             if (act == runSP) {
                 shortestPath(selected);
             }
+            if (act == changeColor) {
+                QColor Color = QColorDialog::getColor(Qt::white, window, "Select Color");
+                if (Color.isValid()){
+                    if (!selected.empty()) ChangeColor(selected,Color);
+                    else ChangeColor({want}, Color);
+                }
+            }
         }
     }
-    QGraphicsScene::contextMenuEvent(event);
 }
 
 void MyScene::keyPressEvent(QKeyEvent *event) {

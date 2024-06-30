@@ -21,7 +21,7 @@ public:
     QGraphicsSimpleTextItem *weight;
 
     MyScene *scene;
-
+    QColor color = QColor(0, 0, 0);
     MyEdge(MyScene *, MyNode *s, MyNode *e, QString _weight, QGraphicsItem *parent = nullptr);
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
