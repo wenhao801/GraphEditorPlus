@@ -13,11 +13,11 @@ MyEdge::MyEdge(MyScene *_scene, MyNode *s, MyNode *e, QString _weight, QGraphics
 
 void MyEdge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     QStyleOptionGraphicsItem *op = (QStyleOptionGraphicsItem *)option;
-    auto color = QColor(0, 0, 0);
+    auto Color = color;
     if (option->state & (QStyle::State_Selected | QStyle::State_MouseOver)) {
-        color = QColor(57, 197, 187);
+        Color = QColor(57, 197, 187);
     }
-    setPen(QPen(QBrush(color, Qt::SolidPattern), penSize, Qt::SolidLine));
+    setPen(QPen(QBrush(Color, Qt::SolidPattern), penSize, Qt::SolidLine));
     op->state &= ~QStyle::State_Selected;
 
     QLineF l(startNode->sceneBoundingRect().center(), endNode->name ? endNode->sceneBoundingRect().center() : endNode->scenePos());

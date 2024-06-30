@@ -18,11 +18,11 @@ MyNode::MyNode(MyScene *_scene, QString _name, QGraphicsItem *parent): QGraphics
 void MyNode::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     name->setPos(boundingRect().center() - name->boundingRect().center());
     QStyleOptionGraphicsItem *op = (QStyleOptionGraphicsItem *)option;
-    auto color = QColor(0, 0, 0);
+    QColor Color = color;
     if (option->state & (QStyle::State_Selected | QStyle::State_MouseOver)) {
-        color = QColor(57, 197, 187);
+        Color = QColor(57, 197, 187);
     }
-    setPen(QPen(QBrush(color, Qt::SolidPattern), penSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    setPen(QPen(QBrush(Color, Qt::SolidPattern), penSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     op->state &= ~QStyle::State_Selected;
 
     painter->setRenderHint(QPainter::Antialiasing);

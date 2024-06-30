@@ -30,7 +30,7 @@ public:
     QGraphicsSimpleTextItem *name = nullptr;
 
     const int penSize = 5, radius = 25;
-
+    QColor color = QColor(0, 0, 0);
     std::set <MyEdge*> inEdge, outEdge;
 };
 

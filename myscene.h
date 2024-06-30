@@ -91,6 +91,7 @@ private:
     void linkChain(QList <QGraphicsItem*>);
     void linkTree(QList <QGraphicsItem*>);
     void linkComplete(QList <QGraphicsItem*>);
+    void ChangeColor(QList <QGraphicsItem*>, QColor Color);
 };
 
 #endif // MYSCENE_H

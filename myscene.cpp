@@ -2,6 +2,8 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QListWidget>
+#include <QColorDialog>
+#include <QPalette>
 #include "mainwindow.h"
 
 #include <QRandomGenerator>
@@ -548,6 +550,21 @@ void MyScene::linkComplete(QList <QGraphicsItem*> items) {
         }
 }
 
+void MyScene::ChangeColor(QList <QGraphicsItem*> items, QColor Color) {
+    for (auto x: items){
+        if (x->type() == MyNode::Type){
+            MyNode *X = static_cast<MyNode*> (x);
+            X -> color = Color;
+            X -> update();
+        }
+        else {
+            MyEdge *X = static_cast<MyEdge*> (x);
+            X -> color = Color;
+            X -> update();
+        }
+    }
+}
+
 void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     QGraphicsItem * want = nullptr;
     QList <QGraphicsItem*> clicked_items = items(event->scenePos());
@@ -567,6 +584,7 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     QAction *linkChainAction = link ? link->addAction("Chain") : nullptr;
     QAction *linkTreeAction = link ? link->addAction("Tree") : nullptr;
     QAction *linkCompleteAction = link ? link->addAction("Complete Graph") : nullptr;
+    QAction *changeColor = want ? menu.addAction("Change color") : nullptr;
 
     if (!menu.isEmpty()) {
         QAction *act = menu.exec(event->screenPos());
@@ -596,6 +614,13 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
             }
             if (act == linkCompleteAction) {
                 linkComplete(selected);
+            }
+            if (act == changeColor) {
+                QColor Color = QColorDialog::getColor(Qt::white, window, "Select Color");
+                if (Color.isValid()){
+
+                    ChangeColor(selected,Color);
+                }
             }
         }
     }
