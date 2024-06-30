@@ -42,6 +42,10 @@ private slots:
 
     void on_actionSelection_editor_triggered();
 
+    void on_actionShortest_Path_triggered();
+
+    void on_actionMinimum_spanning_tree_triggered();
+
 private:
     Ui::MainWindow *ui;
 };

@@ -55,6 +55,7 @@ void MyScene::updateStatusBar() {
 }
 
 MyNode* MyScene::addNode(qreal x, qreal y, QString name) {
+    closeSPWindow();
     if (name.isNull()) {
         while (ids.count(QString::number(defaultNodeID))) ++defaultNodeID;
         name = QString::number(defaultNodeID);
@@ -70,6 +71,7 @@ MyNode* MyScene::addNode(qreal x, qreal y, QString name) {
     return node;
 }
 MyEdge* MyScene::addEdge(MyNode *u, MyNode *v, QString weight) {
+    closeSPWindow();
     MyEdge* edge = new MyEdge(this, u, v, weight);
     addItem(edge);
     edges.insert(edge);
@@ -78,6 +80,7 @@ MyEdge* MyScene::addEdge(MyNode *u, MyNode *v, QString weight) {
     return edge;
 }
 void MyScene::delEdge(MyEdge *e) {
+    closeSPWindow();
     removeItem(e);
     edges.erase(e);
     e->startNode->outEdge.erase(e);
@@ -86,6 +89,7 @@ void MyScene::delEdge(MyEdge *e) {
     delete e;
 }
 void MyScene::delNode(MyNode *n) {
+    closeSPWindow();
     removeItem(n);
     nodes.erase(n);
     ids.remove(n->name->text());
@@ -331,23 +335,27 @@ void MyScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event){
 }
 
 void MyScene::edgeChangeStart(MyEdge *e, MyNode *p) {
+    closeSPWindow();
     e->startNode->outEdge.erase(e);
     e->startNode = p; p->outEdge.insert(e); e->update();
     updateStatusBar();
 }
 void MyScene::edgeChangeEnd(MyEdge *e, MyNode *p) {
+    closeSPWindow();
     e->endNode->inEdge.erase(e);
     e->endNode = p; p->inEdge.insert(e); e->update();
     updateStatusBar();
 }
 
 void MyScene::nameNode(MyNode *n, QString name) {
+    closeSPWindow();
     ids.remove(n->name->text());
     n->name->setText(name);
     ids[name] = n;
     editWindow.updateTable();
 }
 void MyScene::nameEdge(MyEdge *e, QString weight) {
+    closeSPWindow();
     e->weight->setText(weight);
     editWindow.updateTable();
 }
@@ -548,6 +556,60 @@ void MyScene::linkComplete(QList <QGraphicsItem*> items) {
         }
 }
 
+void MyScene::shortestPath(QList <QGraphicsItem*> items) {
+    closeSPWindow();
+    spwindow = new SPWindow(this);
+    if(spwindow->updateSP(items))
+        spwindow->show();
+}
+void MyScene::closeSPWindow() {
+    if (spwindow) {
+        spwindow->close();
+        delete spwindow;
+        spwindow = nullptr;
+    }
+}
+void MyScene::MST(QList <QGraphicsItem*> items) {
+    QList <MyNode*> V;
+    QList <MyEdge*> E;
+    for (auto x: items) {
+        if (x->type() == MyNode::Type) V.push_back(qgraphicsitem_cast<MyNode*>(x));
+        if (x->type() == MyEdge::Type) E.push_back(qgraphicsitem_cast<MyEdge*>(x));
+    }
+    for (auto e: E) {
+        if (e->weight->text().isNull() || e->weight->text().isEmpty()) continue;
+        bool ok = 0;
+        e->weight->text().toDouble(&ok);
+        if (!ok) {
+            QMessageBox::warning(window, "Error", "Edge " + e->startNode->name->text() + " ---(" + e->weight->text() + ")---> " + e->endNode->name->text() + " has non-number weight");
+            return;
+        }
+    }
+    QHash <MyNode*, bool> tmp;
+    for (auto e: E) tmp[e->startNode] = tmp[e->endNode] = 1;
+    for (auto p: V) tmp[p] = 1;
+    V.clear();
+    for (auto it = tmp.constBegin(); it != tmp.constEnd(); ++it) V.push_back(it.key());
+
+    QHash <MyNode*, MyNode*> fa;
+    for (auto p: V) fa[p] = p;
+    std::function<MyNode*(MyNode*)> getFa = [&](MyNode *x) { return fa[x] == x ? x : (fa[x] = getFa(fa[x])); };
+
+    std::sort(E.begin(), E.end(), [&](MyEdge *u, MyEdge *v) {
+        double wu = (u->weight->text().isNull() || u->weight->text().isEmpty()) ? 1 : u->weight->text().toDouble();
+        double wv = (v->weight->text().isNull() || v->weight->text().isEmpty()) ? 1 : v->weight->text().toDouble();
+        return wu < wv;
+    });
+    double ans = 0;
+    for (auto e: E) {
+        if (getFa(e->startNode) == getFa(e->endNode)) continue;
+        ans += (e->weight->text().isNull() || e->weight->text().isEmpty()) ? 1 : e->weight->text().toDouble();
+        fa[getFa(e->startNode)] = getFa(e->endNode);
+        e->setSelected(1);
+    }
+    QMessageBox::information(window, "Result", "Minimum total weight: " + QString::number(ans));
+}
+
 void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     QGraphicsItem * want = nullptr;
     QList <QGraphicsItem*> clicked_items = items(event->scenePos());
@@ -567,6 +629,8 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     QAction *linkChainAction = link ? link->addAction("Chain") : nullptr;
     QAction *linkTreeAction = link ? link->addAction("Tree") : nullptr;
     QAction *linkCompleteAction = link ? link->addAction("Complete Graph") : nullptr;
+    QMenu *run = !selected.empty() ? menu.addMenu("Run...") : nullptr;
+    QAction *runSP = run ? run->addAction("Shortest path") : nullptr;
 
     if (!menu.isEmpty()) {
         QAction *act = menu.exec(event->screenPos());
@@ -576,6 +640,7 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
             }
             if (act == deleteAction) {
                 if (!selected.empty()) {
+                    std::sort(selected.begin(), selected.end(), [&](QGraphicsItem* u, QGraphicsItem *v) { return u->type() > v->type(); });
                     for (auto x: selected) delItem(x);
                 }
                 else {
@@ -596,6 +661,9 @@ void MyScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
             }
             if (act == linkCompleteAction) {
                 linkComplete(selected);
+            }
+            if (act == runSP) {
+                shortestPath(selected);
             }
         }
     }

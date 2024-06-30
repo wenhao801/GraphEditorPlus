@@ -17,7 +17,8 @@ SOURCES += \
     myedge.cpp \
     mynode.cpp \
     myscene.cpp \
-    myview.cpp
+    myview.cpp \
+    spwindow.cpp
 
 HEADERS += \
     consoletable.h \
@@ -27,7 +28,8 @@ HEADERS += \
     myedge.h \
     mynode.h \
     myscene.h \
-    myview.h
+    myview.h \
+    spwindow.h
 
 FORMS += \
     insertfromtext.ui \

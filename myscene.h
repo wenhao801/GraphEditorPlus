@@ -15,6 +15,7 @@
 #include "mynode.h"
 #include "myedge.h"
 #include "editwindow.h"
+#include "spwindow.h"
 
 class MainWindow;
 
@@ -77,6 +78,7 @@ private:
     QPointF lastClickedPoint;
 
     EditWindow editWindow;
+    SPWindow *spwindow;
 
     qreal standard_z = 1e-5;
     int defaultNodeID = 1;
@@ -84,6 +86,7 @@ private:
     QLabel *nodeCount, *edgeCount, *spStatus;
     friend class MainWindow;
     friend class EditWindow;
+    friend class SPWindow;
     MainWindow *window;
 
     QPointF randomNode();
@@ -91,6 +94,9 @@ private:
     void linkChain(QList <QGraphicsItem*>);
     void linkTree(QList <QGraphicsItem*>);
     void linkComplete(QList <QGraphicsItem*>);
+    void shortestPath(QList <QGraphicsItem*>);
+    void closeSPWindow();
+    void MST(QList <QGraphicsItem*> items);
 };
 
 #endif // MYSCENE_H

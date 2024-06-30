@@ -286,3 +286,21 @@ void MainWindow::on_actionSelection_editor_triggered()
     scene->showEditConsole();
 }
 
+
+void MainWindow::on_actionShortest_Path_triggered()
+{
+    QList <QGraphicsItem*> list;
+    for (auto p: scene->nodes) list.push_back(p);
+    for (auto e: scene->edges) list.push_back(e);
+    scene->shortestPath(list);
+}
+
+
+void MainWindow::on_actionMinimum_spanning_tree_triggered()
+{
+    QList <QGraphicsItem*> list;
+    for (auto p: scene->nodes) list.push_back(p);
+    for (auto e: scene->edges) list.push_back(e);
+    scene->MST(list);
+}
+

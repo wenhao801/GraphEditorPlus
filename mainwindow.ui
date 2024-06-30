@@ -205,8 +205,16 @@
     <addaction name="actionAuto_layout"/>
     <addaction name="actionSelection_editor"/>
    </widget>
+   <widget class="QMenu" name="menuRun">
+    <property name="title">
+     <string>Run</string>
+    </property>
+    <addaction name="actionShortest_Path"/>
+    <addaction name="actionMinimum_spanning_tree"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuRun"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -267,6 +275,16 @@
   <action name="actionSelection_editor">
    <property name="text">
     <string>Console</string>
+   </property>
+  </action>
+  <action name="actionShortest_Path">
+   <property name="text">
+    <string>Shortest Path</string>
+   </property>
+  </action>
+  <action name="actionMinimum_spanning_tree">
+   <property name="text">
+    <string>Minimum spanning tree</string>
    </property>
   </action>
  </widget>
